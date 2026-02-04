@@ -1,21 +1,17 @@
 const express = require('express'); // var expresse prend expresse pour le http
 const app = express(); // instasie expresse
 const mysql = require('mysql2');
-/*require('dotenv').config();
-const Utilisateur = process.acce.env.Utilisateur;
-const Mot_Passe = process.acce.env.Mot_Passe;
-const Table = process.acce.env.Table;
-const Adresse = process.acce.env.Adresse;*/
+require('dotenv').config();
+const Utilisateur = process.env.Utilisateur;
+const Mot_Passe = process.env.Mot_Passe;
+const Table = process.env.Table;
+const Adresse = process.env.Adresse;
 
 const connection = mysql.createConnection({
-    host: '172.29.18.130',//localhost si votre node est sur la même VM que votre Bdd
-    user: '',//non utilisateur
-    password: '',//son mode de passe
-    database: 'Teste'//table viser
-    /*host: Adresse,//localhost si votre node est sur la même VM que votre Bdd
+    host: Adresse,//localhost si votre node est sur la même VM que votre Bdd
     user: Utilisateur,//non utilisateur
     password: Mot_Passe,//son mode de passe
-    database: Table//table viser*/
+    database: Table//table viser
 });
 
 connection.connect((err) => {
@@ -28,3 +24,50 @@ connection.connect((err) => {
 
 app.use(express.static('public'));
 app.use(express.json());
+//pour les route
+
+app.post('/register', (req, res) => { // C'est une route mais type "post" donc que par formulaire
+    console.log('Données reçues pour l\'inscription');
+    console.log(req.body);
+    connection.query( //sert a envoyer les donner au serveur
+        'INSERT INTO utilisateur (`login`, `pasword`,`idRole`) VALUES (?,?,?)',
+        [req.body.loginValue,req.body.passwordValue,req.body.idRoleValue],
+        (err, results) => {
+            if (err) {
+                console.error('Erreur lors de l\'insertion dans la base de données :', err);
+                res.status(500).json({ message: 'Erreur serveur' });
+                return;
+            }
+            else {
+                console.log('Insertion réussie, ID utilisateur :', results.insertId);
+                res.json({ message: 'Inscription réussie !', userId: results.insertId });
+            }
+
+        }
+    );
+});
+
+app.post('/connexion', (req, res) => {  
+  console.log(req.body);
+  //on récupère le login et le password
+  const { login, pasword } = req.body;
+  connection.query('SELECT * FROM utilisateur WHERE login = ? AND pasword = ?', [login, pasword], (err, results) => {
+      if (err) {
+        console.error('Erreur lors de la vérification des identifiants :', err);
+        res.status(500).json({ message: 'Erreur serveur' });
+        return;
+      }
+      if (results.length === 0) {
+        res.status(401).json({ message: 'Identifiants invalides' });
+        return;
+      }
+      // Identifiants valides 
+      //renvoi les informations du user
+      res.json({ message: 'Connexion réussie !', user: results[0] });
+    });
+});
+
+
+app.listen(9000, () => { //express écoute sur le port 3000 et affiche un message dans la console
+    console.log('server runing')
+});  //Le poind virgule c'est juste pour dire la fin de la fonction
