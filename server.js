@@ -26,12 +26,12 @@ app.use(express.static('public'));
 app.use(express.json());
 //pour les route
 
-app.post('/register', (req, res) => { // C'est une route mais type "post" donc que par formulaire
+app.post('/register', (req, res) => {
     console.log('Données reçues pour l\'inscription');
     console.log(req.body);
     connection.query( //sert a envoyer les donner au serveur
         'INSERT INTO utilisateur (`login`, `pasword`,`idRole`) VALUES (?,?,?)',
-        [req.body.loginValue,req.body.passwordValue,req.body.idRoleValue],
+        [req.body.loginValue, req.body.passwordValue, req.body.idRoleValue],
         (err, results) => {
             if (err) {
                 console.error('Erreur lors de l\'insertion dans la base de données :', err);
@@ -47,23 +47,23 @@ app.post('/register', (req, res) => { // C'est une route mais type "post" donc q
     );
 });
 
-app.post('/connexion', (req, res) => {  
-  console.log(req.body);
-  //on récupère le login et le password
-  const { login, pasword } = req.body;
-  connection.query('SELECT * FROM utilisateur WHERE login = ? AND pasword = ?', [login, pasword], (err, results) => {
-      if (err) {
-        console.error('Erreur lors de la vérification des identifiants :', err);
-        res.status(500).json({ message: 'Erreur serveur' });
-        return;
-      }
-      if (results.length === 0) {
-        res.status(401).json({ message: 'Identifiants invalides' });
-        return;
-      }
-      // Identifiants valides 
-      //renvoi les informations du user
-      res.json({ message: 'Connexion réussie !', user: results[0] });
+app.post('/connexion', (req, res) => {
+    console.log(req.body);
+    //on récupère le login et le password
+    const { login, pasword } = req.body;
+    connection.query('SELECT id,login,idRole FROM utilisateur WHERE login = ? AND pasword = ?', [login, pasword], (err, results) => {//Pour ne renvoyer que l'id le login et l'id du role
+        if (err) {
+            console.error('Erreur lors de la vérification des identifiants :', err);
+            res.status(500).json({ message: 'Erreur serveur' });
+            return;
+        }
+        if (results.length === 0) {
+            res.status(401).json({ message: 'Identifiants invalides' });
+            return;
+        }
+        // Identifiants valides 
+        //renvoi les informations du user
+        res.json({ message: 'Connexion réussie !', user: results[0] });
     });
 });
 
