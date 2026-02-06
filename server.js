@@ -1,7 +1,10 @@
 const express = require('express'); // var expresse prend expresse pour le http
 const app = express(); // instasie expresse
 const mysql = require('mysql2');
+const path = require('path');//fournit des utilitaires pour travailler avec les chemins de fichiers et de répertoires
+
 require('dotenv').config();
+
 const Utilisateur = process.env.Utilisateur;
 const Mot_Passe = process.env.Mot_Passe;
 const Table = process.env.Table;
@@ -25,7 +28,15 @@ connection.connect((err) => {
 app.use(express.static('public'));
 app.use(express.json());
 //pour les route
-
+app.get('/connexion.html', (req, res) => {
+    const filePath = path.join(__dirname,'public','Connexion.html');
+    // __dirname: répertoire du fichier JS actuel
+    res.sendFile(filePath, (err) => {
+        if (err) {
+            console.error('Erreur envoi fichier:', err);
+        }
+    });
+});
 app.post('/register', (req, res) => {
     console.log('Données reçues pour l\'inscription');
     console.log(req.body);
