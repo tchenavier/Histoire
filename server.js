@@ -28,7 +28,7 @@ connection.connect((err) => {
 app.use(express.static('public'));
 app.use(express.json());
 //pour les route
-app.get('/connexion.html', (req, res) => {
+app.get('/connexion.html', (req, res) => {//envois la page de connection
     const filePath = path.join(__dirname,'public','Connexion.html');
     // __dirname: répertoire du fichier JS actuel
     res.sendFile(filePath, (err) => {

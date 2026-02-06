@@ -1,4 +1,3 @@
-var utilisateur = localStorage.getItem('userId');//récuperation de l'id en localStorage;
 var TextInitial = document.getElementById("TextInitial");
 
 
@@ -7,7 +6,7 @@ TextInitial.addEventListener("DOMContentLoaded", verification);
 
 
 function verification(evenement) {
-    utilisateur = localStorage.getItem('userId');
+   var utilisateur = localStorage.getItem('userId');//récuperation de l'id en localStorage;
     if (utilisateur != null)//verifit si le joueur et connecter
     {
 
