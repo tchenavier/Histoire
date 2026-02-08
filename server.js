@@ -78,6 +78,36 @@ app.post('/connexion', (req, res) => {
     });
 });
 
+app.get('/VerificationSenario', (req, res) => {
+  connection.query('SELECT * FROM user', (err, results) => {// * pour tout selectionner
+    if (err) {//si erreur
+      console.error('Erreur lors de la récupération des utilisateurs :', err);
+      res.status(500).json({ message: 'Erreur serveur' });
+      return;//permet de pas exécuter se qui suit
+    }
+    res.json(results);//pas erreur
+  });
+});
+app.post('/PassageSenario', (req, res) => {
+    console.log(req.body);
+    connection.query( //sert a envoyer les donner au serveur
+        'INSERT INTO utilisateur (`login`, `pasword`,`idRole`) VALUES (?,?,?)',
+        [req.body.loginValue, req.body.passwordValue, req.body.idRoleValue],
+        (err, results) => {
+            if (err) {
+                console.error('Erreur lors de l\'insertion dans la base de données :', err);
+                res.status(500).json({ message: 'Erreur serveur' });
+                return;
+            }
+            else {
+                console.log('Insertion réussie, ID utilisateur :', results.insertId);
+                res.json({ message: 'Inscription réussie !', userId: results.insertId });
+            }
+
+        }
+    );
+});
+
 
 app.listen(9000, () => { //express écoute sur le port 3000 et affiche un message dans la console
     console.log('server runing')
