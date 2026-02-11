@@ -81,7 +81,7 @@ app.post('/connexion', (req, res) => {
 app.post('/VerificationSenario', (req, res) => { //Pour le passage
     console.log(req.body);
     //on récupère le login et le password
-    const { login, id, VerSenario,idSenario} = req.body;
+    const { login, id, VerSenario, idSenario } = req.body;
     connection.query('SELECT idSenarioEnCours FROM utilisateur WHERE login = ? AND id = ?', [login, id], (err, results) => {// * pour tout selectionner
         if (err) {//si erreur
             console.error('Erreur lors de la récupération des utilisateurs :', err);
@@ -94,10 +94,24 @@ app.post('/VerificationSenario', (req, res) => { //Pour le passage
 
 app.post('/PassageSenario', (req, res) => {
     console.log(req.body);
-    connection.query( //sert a envoyer les donner au serveur
-        'INSERT INTO utilisateur (`login`, `id`,`idRequetSenario`) VALUES (?,?,?)',
+    //on récupère le login et le password
+    const { login, id, VerSenario, idSenario,possibiliter } = req.body;
+    connection.query('SELECT idSenarioEnCours FROM utilisateur WHERE login = ? AND id = ?', [login, id], (err, results) => {//verification de l'état d'avancement
+        if (err) {
+            console.error('Erreur lors de la lecture :', err);
+            res.status(500).json({ message: 'Erreur serveur' });
+            return;
+        }
+        else {
+            console.log('Lecuture de l id davancement ok :', results.insertId);
+            idSenario=res;
+        }
+
+    }
+    );
+    connection.query('INSERT INTO utilisateur (`login`, `id`,`idRequetSenario`) VALUES (?,?,?)',
         [req.body.loginValue, req.body.passwordValue, req.body.idRoleValue],
-        (err, results) => {
+        (err, results) => { //verification des posibilité pour l'id actuelle de progresion
             if (err) {
                 console.error('Erreur lors de l\'insertion dans la base de données :', err);
                 res.status(500).json({ message: 'Erreur serveur' });
@@ -105,11 +119,14 @@ app.post('/PassageSenario', (req, res) => {
             }
             else {
                 console.log('Insertion réussie, ID utilisateur :', results.insertId);
-                res.json({ message: 'Inscription réussie !', userId: results.insertId });
             }
 
         }
     );
+    if (VerSenario == possibiliter)
+    {
+
+    }
 });
 
 
