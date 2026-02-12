@@ -95,7 +95,7 @@ app.post('/VerificationSenario', (req, res) => { //Pour le passage
 app.post('/PassageSenario', (req, res) => {
     console.log(req.body);
     //on récupère le login et le password
-    const { login, id, VerSenario, idSenario,possibiliter } = req.body;
+    const { login, id, VerSenario, idSenario, possibiliter } = req.body;
     connection.query('SELECT idSenarioEnCours FROM utilisateur WHERE login = ? AND id = ?', [login, id], (err, results) => {//verification de l'état d'avancement
         if (err) {
             console.error('Erreur lors de la lecture :', err);
@@ -104,16 +104,16 @@ app.post('/PassageSenario', (req, res) => {
         }
         else {
             console.log('Lecuture de l id davancement ok :', results.insertId);
-            idSenario=res;
+            idSenario = res;
         }
 
     }
     );
-    connection.query('INSERT INTO utilisateur (`login`, `id`,`idRequetSenario`) VALUES (?,?,?)',
+    connection.query('SELECT SuitSenario FROM `utilisateur`,`Choix` WHERE utilisateur.`id`= Choix.`idSenario` VALUES (?)',
         [req.body.loginValue, req.body.passwordValue, req.body.idRoleValue],
         (err, results) => { //verification des posibilité pour l'id actuelle de progresion
             if (err) {
-                console.error('Erreur lors de l\'insertion dans la base de données :', err);
+                console.error('Erreur lors de la lecture des posibilite :', err);
                 res.status(500).json({ message: 'Erreur serveur' });
                 return;
             }
@@ -123,13 +123,62 @@ app.post('/PassageSenario', (req, res) => {
 
         }
     );
-    if (VerSenario == possibiliter)
-    {
-
+    if (VerSenario == possibiliter) {
+        connection.query( //sert a envoyer les donner au serveur
+            'INSERT INTO utilisateur (`login`, `pasword`,`idRole`) VALUES (VerSenario)',
+            [req.body.loginValue, req.body.passwordValue, req.body.idRoleValue],
+            (err, results) => {
+                if (err) {
+                    console.error('Erreur lors de l\'insertion dans la base de données :', err);
+                    res.status(500).json({ message: 'Erreur serveur' });
+                    return;
+                }
+                else {
+                    console.log('Insertion réussie :', results.insertId);
+                    res.json({ message: 'modification réussie !', userId: results.insertId });
+                }
+            }
+        );
+    }
+    else {
+        console.log('Valeur non conforme.');
+        res.status(513).json({ message: 'Erreur serveur' });
     }
 });
+app.post('/Texte', (req, res) => {
+    console.log(req.body);
+    //on récupère le login et le password
+    const { login, id, idSenario } = req.body;
+    connection.query('SELECT idSenarioEnCours FROM utilisateur WHERE login = ? AND id = ?', [login, id], (err, idSenario) => {// * pour tout selectionner
+        if (err) {//si erreur
+            console.error('Erreur lors de la récupération des utilisateurs :', err);
+            res.status(500).json({ message: 'Erreur serveur' });
+            return;//permet de pas exécuter se qui suit
+        }
+        //res.json(idSenario);//pas erreur
 
+    });
 
+    if (idSenario == 500) {
+
+    }
+    else {
+        connection.query('SELECT Texte,ambiance,Audio FROM Senario WHERE id = ?', [idSenario], (err, results) => {//Pour ne renvoyer que l'id le login et l'id du role
+            if (err) {
+                console.error('Erreur lors de la vérification des identifiants :', err);
+                res.status(500).json({ message: 'Erreur serveur' });
+                return;
+            }
+            if (results.length === 0) {
+                res.status(401).json({ message: 'Identifiants invalides' });
+                return;
+            }
+            // Identifiants valides 
+            //renvoi les informations du user
+            res.json({ message: 'Connexion réussie !', user: results[0] });
+        });
+    }
+});
 app.listen(9000, () => { //express écoute sur le port 3000 et affiche un message dans la console
     console.log('server runing')
 });  //Le poind virgule c'est juste pour dire la fin de la fonction
