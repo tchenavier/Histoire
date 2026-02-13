@@ -106,79 +106,83 @@ app.post('/PassageSenario', (req, res) => {
             console.log('Lecuture de l id davancement ok :', results.insertId);
             idSenario = res;
         }
-
-    }
-    );
-    connection.query('SELECT SuitSenario FROM `utilisateur`,`Choix` WHERE utilisateur.`id`= Choix.`idSenario` VALUES (?)',
-        [req.body.loginValue, req.body.passwordValue, req.body.idRoleValue],
-        (err, results) => { //verification des posibilité pour l'id actuelle de progresion
-            if (err) {
-                console.error('Erreur lors de la lecture des posibilite :', err);
-                res.status(500).json({ message: 'Erreur serveur' });
-                return;
-            }
-            else {
-                console.log('Insertion réussie, ID utilisateur :', results.insertId);
-            }
-
-        }
-    );
-    if (VerSenario == possibiliter) {
-        connection.query( //sert a envoyer les donner au serveur
-            'INSERT INTO utilisateur (`login`, `pasword`,`idRole`) VALUES (VerSenario)',
+        connection.query('SELECT SuitSenario FROM `utilisateur`,`Choix` WHERE utilisateur.`id`= Choix.`idSenario` VALUES (?)',//car insacron pour que se soit bien a la suite
             [req.body.loginValue, req.body.passwordValue, req.body.idRoleValue],
-            (err, results) => {
+            (err, results) => { //verification des posibilité pour l'id actuelle de progresion
                 if (err) {
-                    console.error('Erreur lors de l\'insertion dans la base de données :', err);
+                    console.error('Erreur lors de la lecture des posibilite :', err);
                     res.status(500).json({ message: 'Erreur serveur' });
                     return;
                 }
                 else {
-                    console.log('Insertion réussie :', results.insertId);
-                    res.json({ message: 'modification réussie !', userId: results.insertId });
+                    console.log('Insertion réussie, ID utilisateur :', results.insertId);
+                }
+                if (VerSenario == possibiliter) {
+                    connection.query( //sert a envoyer les donner au serveur
+                        'INSERT INTO utilisateur (`login`, `pasword`,`idRole`) VALUES (VerSenario) whrer',
+                        [req.body.loginValue, req.body.passwordValue, req.body.idRoleValue],
+                        (err, results) => {
+                            if (err) {
+                                console.error('Erreur lors de l\'insertion dans la base de données :', err);
+                                res.status(500).json({ message: 'Erreur serveur' });
+                                return;
+                            }
+                            else {
+                                console.log('Insertion réussie :', results.insertId);
+                                res.json({ message: 'modification réussie !', userId: results.insertId });
+                            }
+                        }
+                    );
+                }
+                else {
+                    console.log('Valeur non conforme.');
+                    res.status(513).json({ message: 'Erreur serveur' });
+                    return;
                 }
             }
         );
     }
-    else {
-        console.log('Valeur non conforme.');
-        res.status(513).json({ message: 'Erreur serveur' });
-    }
+    );
 });
+
 app.post('/Texte', (req, res) => {
+    let idSenario;
     console.log(req.body);
     //on récupère le login et le password
-    const { login, id, idSenario } = req.body;
-    connection.query('SELECT idSenarioEnCours FROM utilisateur WHERE login = ? AND id = ?', [login, id], (err, idSenario) => {// * pour tout selectionner
+    const { login, id, } = req.body;
+    connection.query('SELECT idSenarioEnCours FROM utilisateur WHERE login = ? AND id = ?', [login, id], (err, results) => {// * pour tout selectionner
         if (err) {//si erreur
             console.error('Erreur lors de la récupération des utilisateurs :', err);
             res.status(500).json({ message: 'Erreur serveur' });
             return;//permet de pas exécuter se qui suit
         }
         //res.json(idSenario);//pas erreur
+        idSenario = results[0].idSenarioEnCours;
 
+        if (idSenario == 500) {//car insacron pour que se soit bien a la suite
+            console.log("500");
+            return;
+        }
+        else {//car insacron pour que se soit bien a la suite
+            connection.query('SELECT Texte,ambiance,Audio FROM Senario WHERE id = ?', [idSenario], (err, results) => {//Pour ne renvoyer que l'id le login et l'id du role
+                if (err) {
+                    console.error('Erreur lors de la vérification des identifiants :', err);
+                    res.status(500).json({ message: 'Erreur serveur' });
+                    return;
+                }
+                if (results.length === 0) {
+                    res.status(401).json({ message: 'Identifiants invalides' });
+                    return;
+                }
+                // Identifiants valides 
+                //renvoi les informations du user
+                res.json({ message: 'Demande réussie !', user: results[0] });
+            });
+        }
     });
-
-    if (idSenario == 500) {
-
-    }
-    else {
-        connection.query('SELECT Texte,ambiance,Audio FROM Senario WHERE id = ?', [idSenario], (err, results) => {//Pour ne renvoyer que l'id le login et l'id du role
-            if (err) {
-                console.error('Erreur lors de la vérification des identifiants :', err);
-                res.status(500).json({ message: 'Erreur serveur' });
-                return;
-            }
-            if (results.length === 0) {
-                res.status(401).json({ message: 'Identifiants invalides' });
-                return;
-            }
-            // Identifiants valides 
-            //renvoi les informations du user
-            res.json({ message: 'Connexion réussie !', user: results[0] });
-        });
-    }
 });
+
+
 app.listen(9000, () => { //express écoute sur le port 3000 et affiche un message dans la console
     console.log('server runing')
 });  //Le poind virgule c'est juste pour dire la fin de la fonction
