@@ -104,10 +104,10 @@ app.post('/PassageSenario', (req, res) => {
         }
         else {
             console.log('Lecuture de l id davancement ok :', results.insertId);
-            idSenario = res;
+            idSenario = results[0].idSenarioEnCours;
         }
-        connection.query('SELECT SuitSenario FROM `utilisateur`,`Choix` WHERE utilisateur.`id`= Choix.`idSenario` VALUES (?)',//car insacron pour que se soit bien a la suite
-            [req.body.loginValue, req.body.passwordValue, req.body.idRoleValue],
+        connection.query('SELECT SuitSenario FROM `utilisateur`,`Choix` WHERE utilisateur.`idSenarioEnCours`= Choix.`idSenario` AND utilisateur.`idSenarioEnCours` = ?',//car insacron pour que se soit bien a la suite
+            [idSenario],
             (err, results) => { //verification des posibilité pour l'id actuelle de progresion
                 if (err) {
                     console.error('Erreur lors de la lecture des posibilite :', err);
@@ -119,8 +119,8 @@ app.post('/PassageSenario', (req, res) => {
                 }
                 if (VerSenario == possibiliter) {
                     connection.query( //sert a envoyer les donner au serveur
-                        'INSERT INTO utilisateur (`login`, `pasword`,`idRole`) VALUES (VerSenario) whrer',
-                        [req.body.loginValue, req.body.passwordValue, req.body.idRoleValue],
+                        'UPDATE utilisateur SET idSenarioEnCours = ? WHERE login = ? AND id = ?',
+                        [VerSenario, login, id],
                         (err, results) => {
                             if (err) {
                                 console.error('Erreur lors de l\'insertion dans la base de données :', err);
