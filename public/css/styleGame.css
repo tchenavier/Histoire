@@ -1,0 +1,171 @@
+:root {
+    --gothic-black: #0a0a0a;
+    --blood-red: #4a0000;
+    --iron-grey: #2c2c2c;
+    --text-color: #d4af37; /* Or vieilli */
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--gothic-black);
+    color: var(--text-color);
+    font-family: 'Crimson Text', serif;
+    overflow: hidden; /* Empêche le scroll sur le jeu */
+}
+
+h1, h2, .choice-btn {
+    font-family: 'Cinzel', serif;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+/* --- CONNEXION --- */
+.login-container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle, #1a0000 0%, #000 100%);
+}
+
+.login-box {
+    padding: 40px;
+    background: rgba(10, 10, 10, 0.9);
+    border: 2px solid var(--iron-grey);
+    box-shadow: 0 0 20px rgba(0,0,0,1), inset 0 0 10px var(--blood-red);
+    text-align: center;
+}
+
+input {
+    display: block;
+    width: 100%;
+    margin: 15px 0;
+    padding: 10px;
+    background: #111;
+    border: 1px solid var(--iron-grey);
+    color: white;
+}
+
+/* --- SELECTION DES CHAPITRES --- */
+.chapter-selection {
+    padding: 50px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.chapter-card {
+    width: 250px;
+    border: 1px solid var(--iron-grey);
+    cursor: pointer;
+    transition: transform 0.3s;
+    background: #111;
+}
+
+.chapter-card:hover {
+    transform: scale(1.05);
+    border-color: var(--blood-red);
+}
+
+.chapter-card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+
+.chapter-info { padding: 10px; text-align: center; }
+
+/* --- INTERFACE VISUAL NOVEL --- */
+#game-interface {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background-size: cover;
+    background-position: center;
+}
+
+/* Conteneur des personnages */
+.characters-layer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    height: 80%;
+}
+
+.character {
+    height: 100%;
+    object-fit: contain;
+}
+
+/* Zone de texte - Style Fer Forgé */
+.dialogue-container {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    max-width: 900px;
+    min-height: 120px;
+    background: rgba(0, 0, 0, 0.85);
+    padding: 20px 30px;
+    
+    /* Le fer forgé simulé par les bordures et ombres */
+    border: 4px double #333;
+    border-radius: 15px;
+    box-shadow: 
+        0 0 0 2px #000, 
+        0 0 15px var(--blood-red),
+        inset 0 0 20px rgba(0,0,0,0.5);
+    z-index: 10;
+}
+
+/* Décoration fer forgé aux angles (Optionnel) */
+.dialogue-container::before {
+    content: "◈";
+    position: absolute;
+    top: -10px; left: -10px;
+    color: var(--iron-grey);
+    font-size: 24px;
+}
+
+/* Zone des choix - Alignée à droite au dessus du texte */
+.choice-container {
+    position: absolute;
+    bottom: 160px; /* Juste au dessus de la boite de dialogue */
+    right: 10%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-end;
+    z-index: 20;
+}
+
+.choice-btn {
+    background: rgba(20, 0, 0, 0.9);
+    color: var(--text-color);
+    border: 1px solid var(--iron-grey);
+    padding: 10px 20px;
+    cursor: pointer;
+    min-width: 200px;
+    text-align: right;
+    transition: 0.2s;
+}
+
+.choice-btn:hover {
+    background: var(--blood-red);
+    color: white;
+    border-color: var(--text-color);
+}
+
+.btn-resume {
+    background: var(--blood-red);
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    cursor: pointer;
+    margin-bottom: 30px;
+}
