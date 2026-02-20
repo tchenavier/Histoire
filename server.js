@@ -28,15 +28,6 @@ connection.connect((err) => {
 app.use(express.static('public'));
 app.use(express.json());//Pour découper en objet JSON, (pour utiliser JSON)
 //pour les route
-app.get('/connexion.html', (req, res) => {//envois la page de connection
-    const filePath = path.join(__dirname, 'public', 'Connexion.html');
-    // __dirname: répertoire du fichier JS actuel
-    res.sendFile(filePath, (err) => {
-        if (err) {
-            console.error('Erreur envoi fichier:', err);
-        }
-    });
-});
 app.post('/register', (req, res) => {
     console.log('Données reçues pour l\'inscription');
     console.log(req.body);
@@ -75,6 +66,13 @@ app.post('/connexion', (req, res) => {
         // Identifiants valides 
         //renvoi les informations du user
         res.json({ message: 'Connexion réussie !', user: results[0] });
+        const filePath = path.join(__dirname, 'public', 'visualNovel.html');//envois la page du jeu
+        // __dirname: répertoire du fichier JS actuel
+        res.sendFile(filePath, (err) => {
+            if (err) {
+                console.error('Erreur envoi fichier:', err);
+            }
+        });
     });
 });
 

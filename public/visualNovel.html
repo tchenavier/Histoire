@@ -1,0 +1,70 @@
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta http-equiv="Content-Security-policy" content="default-src 'self';style-src 'self'; script-src 'self';child-src 'none';">
+    <title>accueil</title>
+    <link rel='stylesheet' type='text/css' href='css/styleGame.css'>
+
+</head>
+
+<body>
+
+    <div id="selection-screen">
+        <h1 style="text-align: center; margin-top: 40px;">Chroniques</h1>
+        
+        <div style="text-align: center;">
+            <button class="btn-resume">CONTINUER L'AVENTURE</button>
+        </div>
+
+        <div class="chapter-selection">
+            <div class="chapter-card" onclick="startGame(1)">
+                <img src="images/chap1.jpg" alt="Chapitre 1">
+                <div class="chapter-info">
+                    <h3>I. Recrutement</h3>
+                </div>
+            </div>
+            <div class="chapter-card" onclick="startGame(2)">
+                <img src="images/chap2.jpg" alt="Chapitre 2">
+                <div class="chapter-info">
+                    <h3>II. Le début des ennuis</h3>
+                </div>
+            </div>
+            </div>
+    </div>
+
+    <div id="game-interface" style="display: none; background-image: url('images/decor_chateau.jpg');">
+        
+        <div class="characters-layer">
+            <img src="images/Exemple" class="character" alt="Démon">
+        </div>
+
+        <div class="choice-container">
+            <button class="choice-btn">Choix1</button>
+            <button class="choice-btn">Choix2</button>
+        </div>
+
+        <div class="dialogue-container">
+            <h4 style="margin: 0 0 10px 0; color: var(--blood-red);">Personnage</h4>
+            <p id="dialogue-text">
+                ""
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function startGame(chapterId) {
+            document.getElementById('selection-screen').style.display = 'none';
+            document.getElementById('game-interface').style.display = 'block';
+            console.log("Lancement du chapitre : " + chapterId);
+            // Ici, tu chargeras tes données JSON pour le chapitre
+        }
+    </script>
+</body>
+<script src="javascript/main.js"></script>
+
+
+</html>
