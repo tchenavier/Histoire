@@ -90,6 +90,25 @@ app.post('/VerificationSenario', (req, res) => { //Pour le passage
     });
 });
 
+app.post('/PassageRole', (req, res) => { //Pour le passage
+    console.log(req.body);
+    //on récupère le login et le password
+    const { login, id,RoleActuelle, RoleViser, idSenario } = req.body;
+    connection.query('SELECT idSenarioEnCours FROM utilisateur WHERE login = ? AND id = ?', [login, id], (err, results) => {// * pour tout selectionner
+        if (err) {//si erreur
+            console.error('Erreur lors de la récupération des utilisateurs :', err);
+            res.status(500).json({ message: 'Erreur serveur' });
+            return;//permet de pas exécuter se qui suit
+        }
+       idSenario = results[1];
+
+        if ( idSenario == 1 ||RoleActuelle == null)
+        {
+//Change de rol
+        }
+    });
+});
+
 app.post('/PassageSenario', (req, res) => {
     console.log(req.body);
     //on récupère le login et le password
