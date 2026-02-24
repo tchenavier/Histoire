@@ -32,8 +32,8 @@ app.post('/register', (req, res) => {
     console.log('Données reçues pour l\'inscription');
     console.log(req.body);
     connection.query( //sert a envoyer les donner au serveur
-        'INSERT INTO utilisateur (`login`, `pasword`,`idRole`) VALUES (?,?,?)',
-        [req.body.loginValue, req.body.passwordValue, req.body.idRoleValue],
+        'INSERT INTO utilisateur (`login`, `pasword`) VALUES (?,?)',
+        [req.body.loginValue, req.body.passwordValue],
         (err, results) => {
             if (err) {
                 console.error('Erreur lors de l\'insertion dans la base de données :', err);
@@ -53,7 +53,7 @@ app.post('/connexion', (req, res) => {
     console.log(req.body);
     //on récupère le login et le password
     const { login, pasword } = req.body;
-    connection.query('SELECT id,login,idRole FROM utilisateur WHERE login = ? AND pasword = ?', [login, pasword], (err, results) => {//Pour ne renvoyer que l'id le login et l'id du role
+    connection.query('SELECT id,login FROM utilisateur WHERE login = ? AND pasword = ?', [login, pasword], (err, results) => {//Pour ne renvoyer que l'id le login et l'id du role
         if (err) {
             console.error('Erreur lors de la vérification des identifiants :', err);
             res.status(500).json({ message: 'Erreur serveur' });
@@ -65,12 +65,12 @@ app.post('/connexion', (req, res) => {
         }
         // Identifiants valides 
         //renvoi les informations du user
-        res.json({ message: 'Connexion réussie !', user: results[0] });
+        res.status(202).json({user: results[0] });
         const filePath = path.join(__dirname, 'public', 'visualNovel.html');//envois la page du jeu
         // __dirname: répertoire du fichier JS actuel
         res.sendFile(filePath, (err) => {
             if (err) {
-                console.error('Erreur envoi fichier:', err);
+                console.error('Erreur d envoi du fichier:', err);
             }
         });
     });
@@ -92,19 +92,33 @@ app.post('/VerificationSenario', (req, res) => { //Pour le passage
 
 app.post('/PassageRole', (req, res) => { //Pour le passage
     console.log(req.body);
-    //on récupère le login et le password
-    const { login, id,RoleActuelle, RoleViser, idSenario } = req.body;
-    connection.query('SELECT idSenarioEnCours FROM utilisateur WHERE login = ? AND id = ?', [login, id], (err, results) => {// * pour tout selectionner
+    //on récupère le login et l'id de l'utilisateur
+    const { login, id, RoleViser} = req.body;//la requet fourni login;id et RoleViser
+    connection.query('SELECT idSenarioEnCours,idRole FROM utilisateur WHERE login = ? AND id = ?', [login, id], (err, results) => {// * pour tout selectionner
         if (err) {//si erreur
             console.error('Erreur lors de la récupération des utilisateurs :', err);
             res.status(500).json({ message: 'Erreur serveur' });
             return;//permet de pas exécuter se qui suit
         }
-       idSenario = results[1];
+       const idSenario = results[1];
+       const RoleActuelle=results[2];
 
-        if ( idSenario == 1 ||RoleActuelle == null)
-        {
-//Change de rol
+        if (idSenario == 1 || RoleActuelle == null) {//Change de rol
+            connection.query(
+                'UPDATE utilisateur SET idRole = ? WHERE login = ? AND id = ?',
+                [req.body.idRole, login, id],
+                (err, results) => {
+                    if (err) {
+                        console.error('Erreur lors de l\'insertion dans la base de données :', err);
+                        res.status(500).json({ message: 'Erreur serveur' });
+                        return;
+                    }
+                    else {
+                        console.log('Insertion réussie :', results.insertId);
+                        res.status(204);
+                    }
+                }
+            );
         }
     });
 });
@@ -125,7 +139,7 @@ app.post('/PassageSenario', (req, res) => {
         }
         connection.query('SELECT SuitSenario FROM `utilisateur`,`Choix` WHERE utilisateur.`idSenarioEnCours`= Choix.`idSenario` AND utilisateur.`idSenarioEnCours` = ?',//car insacron pour que se soit bien a la suite
             [idSenario],
-            (err, results) => { //verification des posibilité pour l'id actuelle de progresion
+            (err, results) => { //verification des posibilité pour l'id actuelle de progresion A FAIR !!!
                 if (err) {
                     console.error('Erreur lors de la lecture des posibilite :', err);
                     res.status(500).json({ message: 'Erreur serveur' });
@@ -135,7 +149,7 @@ app.post('/PassageSenario', (req, res) => {
                     console.log('Insertion réussie, ID utilisateur :', results.insertId);
                 }
                 if (VerSenario == possibiliter) {
-                    connection.query( //sert a envoyer les donner au serveur
+                    connection.query( //sert a envoyer l'identifiant du nouveau chapitre
                         'UPDATE utilisateur SET idSenarioEnCours = ? WHERE login = ? AND id = ?',
                         [VerSenario, login, id],
                         (err, results) => {
@@ -146,7 +160,7 @@ app.post('/PassageSenario', (req, res) => {
                             }
                             else {
                                 console.log('Insertion réussie :', results.insertId);
-                                res.json({ message: 'modification réussie !', userId: results.insertId });
+                                res.status(204);
                             }
                         }
                     );
@@ -193,7 +207,7 @@ app.post('/Texte', (req, res) => {
                 }
                 // Identifiants valides 
                 //renvoi les informations du user
-                res.json({ message: 'Demande réussie !', user: results[0] });
+                res.status(201).json({ user: results[0] });
             });
         }
     });
