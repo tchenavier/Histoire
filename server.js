@@ -66,7 +66,7 @@ app.post('/connexion', (req, res) => {
         }
         // Identifiants valides 
         //renvoi les informations du user
-        res.status(202).json({user: results[0] });
+        res.status(202).json({ user: results[0] });
         const filePath = path.join(__dirname, 'public', 'visualNovel.html');//envois la page du jeu
         // __dirname: répertoire du fichier JS actuel
         res.sendFile(filePath, (err) => {
@@ -95,15 +95,15 @@ app.post('/VerificationSenario', (req, res) => { //Pour le passage
 app.post('/PassageRole', (req, res) => { //Pour le passage
     console.log(req.body);
     //on récupère le login et l'id de l'utilisateur
-    const { login, id, RoleViser} = req.body;//la requet fourni login;id et RoleViser
+    const { login, id, RoleViser } = req.body;//la requet fourni login;id et RoleViser
     connection.query('SELECT idSenarioEnCours,idRole FROM utilisateur WHERE login = ? AND id = ?', [login, id], (err, results) => {// * pour tout selectionner
         if (err) {//si erreur
             console.error('Erreur lors de la récupération des utilisateurs :', err);
             res.status(500).json({ message: 'Erreur serveur' });
             return;//permet de ne pas exécuter se qui suit
         }
-       const idSenario = results[1];
-       const RoleActuelle=results[2];
+        const idSenario = results[1];
+        const RoleActuelle = results[2];
 
         if (idSenario == 1 || RoleActuelle == null) {//Change de rol
             connection.query(
@@ -191,22 +191,27 @@ app.post('/Texte', (req, res) => {
             res.status(500).json({ message: 'Erreur serveur' });
             return;//permet de pas exécuter se qui suit
         }
+        if (results.length === 0) {
+            res.status(401).json({ message: '' });
+            return;
+        }
         //res.json(idSenario);//pas erreur
         idSenario = results[0].idSenarioEnCours;
 
-        if (idSenario == 500) {//car insacron pour que se soit bien a la suite
+        if (idSenario == 500) {//car insacron, donc imbriquer pour que se soit bien a la suite
             console.log("500");
+            res.status(500).json({ message: 'Erreur serveur' });
             return;
         }
-        else {//car insacron pour que se soit bien a la suite
-            connection.query('SELECT Texte,ambiance,Audio FROM Senario WHERE id = ?', [idSenario], (err, results) => {//Pour ne renvoyer que l'id le login et l'id du role
+        else {//car insacron, donc imbriquer pour que se soit bien a la suite
+            connection.query('SELECT Texte,ambiance,Audio FROM Senario WHERE id = ?', [idSenario], (err, results) => {//envoie les information du senario
                 if (err) {
                     console.error('Erreur lors de la vérification des identifiants :', err);
                     res.status(500).json({ message: 'Erreur serveur' });
                     return;
                 }
                 if (results.length === 0) {
-                    res.status(401).json({ message: 'Identifiants invalides' });
+                    res.status(401).json({ message: '' });
                     return;
                 }
                 // Identifiants valides 
