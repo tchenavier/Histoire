@@ -42,7 +42,8 @@ app.post('/register', (req, res) => {
             }
             else {
                 console.log('Insertion réussie, ID utilisateur :', results.insertId);
-                res.json({ message: 'Inscription réussie !', userId: results.insertId });
+                res.status(200).json({ message: 'Inscription réussie !', userId: results.insertId });
+                return;
             }
 
         }
@@ -86,7 +87,8 @@ app.post('/VerificationSenario', (req, res) => { //Pour le passage
             res.status(500).json({ message: 'Erreur serveur' });
             return;//permet de pas exécuter se qui suit
         }
-        res.json(results);//pas erreur
+        res.status(200).json(results);//pas d erreur
+        return;
     });
 });
 
@@ -98,7 +100,7 @@ app.post('/PassageRole', (req, res) => { //Pour le passage
         if (err) {//si erreur
             console.error('Erreur lors de la récupération des utilisateurs :', err);
             res.status(500).json({ message: 'Erreur serveur' });
-            return;//permet de pas exécuter se qui suit
+            return;//permet de ne pas exécuter se qui suit
         }
        const idSenario = results[1];
        const RoleActuelle=results[2];
@@ -106,7 +108,7 @@ app.post('/PassageRole', (req, res) => { //Pour le passage
         if (idSenario == 1 || RoleActuelle == null) {//Change de rol
             connection.query(
                 'UPDATE utilisateur SET idRole = ? WHERE login = ? AND id = ?',
-                [req.body.idRole, login, id],
+                [RoleViser, login, id],
                 (err, results) => {
                     if (err) {
                         console.error('Erreur lors de l\'insertion dans la base de données :', err);
@@ -115,7 +117,8 @@ app.post('/PassageRole', (req, res) => { //Pour le passage
                     }
                     else {
                         console.log('Insertion réussie :', results.insertId);
-                        res.status(204);
+                        res.status(204).json({ message: '' });
+                        return;
                     }
                 }
             );
@@ -160,7 +163,8 @@ app.post('/PassageSenario', (req, res) => {
                             }
                             else {
                                 console.log('Insertion réussie :', results.insertId);
-                                res.status(204);
+                                res.status(204).json({ message: '' });
+                                return;
                             }
                         }
                     );
@@ -207,7 +211,7 @@ app.post('/Texte', (req, res) => {
                 }
                 // Identifiants valides 
                 //renvoi les informations du user
-                res.status(201).json({ user: results[0] });
+                res.status(200).json({ user: results[0] });
             });
         }
     });
