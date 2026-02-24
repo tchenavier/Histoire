@@ -106,38 +106,38 @@ app.post('/PassageRole', (req, res) => { //Pour le passage
             res.status(401).json({ message: '' });
             return;
         }
-        else{
-        const idSenario = results[1];
-        const RoleActuelle = results[2];
+        else {
+            const idSenario = results[1];
+            const RoleActuelle = results[2];
 
-        if (idSenario == 1 || RoleActuelle == null) {//Change de rol
-            connection.query(
-                'UPDATE utilisateur SET idRole = ? WHERE login = ? AND id = ?',
-                [RoleViser, login, id],
-                (err, results) => {
-                    if (err) {
-                        console.error('Erreur lors de l\'insertion dans la base de données :', err);
-                        res.status(500).json({ message: 'Erreur serveur' });
-                        return;
+            if (idSenario == 1 || RoleActuelle == null) {//Change de rol
+                connection.query(
+                    'UPDATE utilisateur SET idRole = ? WHERE login = ? AND id = ?',
+                    [RoleViser, login, id],
+                    (err, results) => {
+                        if (err) {
+                            console.error('Erreur lors de l\'insertion dans la base de données :', err);
+                            res.status(500).json({ message: 'Erreur serveur' });
+                            return;
+                        }
+                        else {
+                            console.log('Insertion réussie :', results.insertId);
+                            res.status(204).json({ message: '' });
+                            return;
+                        }
                     }
-                    else {
-                        console.log('Insertion réussie :', results.insertId);
-                        res.status(204).json({ message: '' });
-                        return;
-                    }
-                }
-            );
+                );
+            }
+
         }
 
-        }
-        
     });
 });
 
 app.post('/PassageSenario', (req, res) => {
     console.log(req.body);
     //on récupère le login et le password
-    const { login, id, VerSenario, idSenario, possibiliter } = req.body;
+    const { login, id, VerSenario } = req.body;
     connection.query('SELECT idSenarioEnCours FROM utilisateur WHERE login = ? AND id = ?', [login, id], (err, results) => {//verification de l'état d'avancement
         if (err) {
             console.error('Erreur lors de la lecture :', err);
@@ -150,8 +150,9 @@ app.post('/PassageSenario', (req, res) => {
         }
         else {
             console.log('Lecuture de l id davancement ok :', results.insertId);
-            idSenario = results[0].idSenarioEnCours;
         }
+
+        const idSenario = results[0].idSenarioEnCours;
         connection.query('SELECT SuitSenario FROM `utilisateur`,`Choix` WHERE utilisateur.`idSenarioEnCours`= Choix.`idSenario` AND utilisateur.`idSenarioEnCours` = ?',//car insacron pour que se soit bien a la suite
             [idSenario],
             (err, results) => { //verification des posibilité pour l'id actuelle de progresion A FAIR !!!
@@ -164,31 +165,33 @@ app.post('/PassageSenario', (req, res) => {
                     res.status(401).json({ message: '' });
                     return;
                 }
-                else {
-                    console.log('Insertion réussie, ID utilisateur :', results.insertId);
-                }
-                if (VerSenario == possibiliter) {
-                    connection.query( //sert a envoyer l'identifiant du nouveau chapitre
-                        'UPDATE utilisateur SET idSenarioEnCours = ? WHERE login = ? AND id = ?',
-                        [VerSenario, login, id],
-                        (err, results) => {
-                            if (err) {
-                                console.error('Erreur lors de l\'insertion dans la base de données :', err);
-                                res.status(500).json({ message: 'Erreur serveur' });
-                                return;
+                const longueur = results.length;
+                for (let i = 0; i < longueur; i++) {
+                    let possibiliter = results[i];
+                    let passage =0;
+                    if (VerSenario == possibiliter) {
+                        passage =1;
+                        connection.query( //sert a envoyer l'identifiant du nouveau chapitre
+                            'UPDATE utilisateur SET idSenarioEnCours = ? WHERE login = ? AND id = ?',
+                            [VerSenario, login, id],
+                            (err, results) => {
+                                if (err) {
+                                    console.error('Erreur lors de l\'insertion dans la base de données :', err);
+                                    res.status(500).json({ message: 'Erreur serveur' });
+                                    return;
+                                }
+                                else {
+                                    console.log('Insertion réussie :', results.insertId);
+                                    res.status(204).json({ message: '' });
+                                    return;
+                                }
                             }
-                            else {
-                                console.log('Insertion réussie :', results.insertId);
-                                res.status(204).json({ message: '' });
-                                return;
-                            }
-                        }
-                    );
-                }
-                else {
-                    console.log('Valeur non conforme.');
-                    res.status(513).json({ message: 'Erreur serveur' });
-                    return;
+                        );
+                    } else if (i == longueur && passage ==0) {
+                        console.log('Valeur non conforme.');
+                        res.status(513).json({ message: 'Erreur serveur' });
+                        return;
+                    }
                 }
             }
         );
@@ -200,7 +203,7 @@ app.post('/Texte', (req, res) => {
     let idSenario;
     console.log(req.body);
     //on récupère le login et le password
-    const { login, id, } = req.body;
+    const { login, id } = req.body;
     connection.query('SELECT idSenarioEnCours FROM utilisateur WHERE login = ? AND id = ?', [login, id], (err, results) => {// * pour tout selectionner
         if (err) {//si erreur
             console.error('Erreur lors de la récupération des utilisateurs :', err);
