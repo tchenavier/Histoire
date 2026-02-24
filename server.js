@@ -102,6 +102,11 @@ app.post('/PassageRole', (req, res) => { //Pour le passage
             res.status(500).json({ message: 'Erreur serveur' });
             return;//permet de ne pas exécuter se qui suit
         }
+        if (results.length === 0) {
+            res.status(401).json({ message: '' });
+            return;
+        }
+        else{
         const idSenario = results[1];
         const RoleActuelle = results[2];
 
@@ -123,6 +128,9 @@ app.post('/PassageRole', (req, res) => { //Pour le passage
                 }
             );
         }
+
+        }
+        
     });
 });
 
@@ -136,6 +144,10 @@ app.post('/PassageSenario', (req, res) => {
             res.status(500).json({ message: 'Erreur serveur' });
             return;
         }
+        if (results.length === 0) {
+            res.status(401).json({ message: '' });
+            return;
+        }
         else {
             console.log('Lecuture de l id davancement ok :', results.insertId);
             idSenario = results[0].idSenarioEnCours;
@@ -146,6 +158,10 @@ app.post('/PassageSenario', (req, res) => {
                 if (err) {
                     console.error('Erreur lors de la lecture des posibilite :', err);
                     res.status(500).json({ message: 'Erreur serveur' });
+                    return;
+                }
+                if (results.length === 0) {
+                    res.status(401).json({ message: '' });
                     return;
                 }
                 else {
