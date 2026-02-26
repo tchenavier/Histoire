@@ -167,13 +167,11 @@ app.post('/PassageSenario', (req, res) => {
                     return;
                 }
                 const longueur = results.length;
-                let numero;
                 let passage = 0;
                 for (let i = 0; i < longueur; i++) {
                     let possibiliter = results[i].SuitSenario;
                     if (VerSenario == possibiliter) {
                         passage = 1;
-                        numero = i;
                         break;
                     } else if (i == longueur - 1 && passage == 0) {
                         console.log('Valeur non conforme.');
