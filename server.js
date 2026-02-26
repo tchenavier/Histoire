@@ -2,6 +2,7 @@ const express = require('express'); // var expresse prend expresse pour le http
 const app = express(); // instasie expresse
 const mysql = require('mysql2');
 const path = require('path');//fournit des utilitaires pour travailler avec les chemins de fichiers et de répertoires
+const { BroadcastChannel } = require('worker_threads');
 
 require('dotenv').config();
 
@@ -153,9 +154,9 @@ app.post('/PassageSenario', (req, res) => {
         }
 
         const idSenario = results[0].idSenarioEnCours;
-        connection.query('SELECT SuitSenario FROM `utilisateur`,`Choix` WHERE utilisateur.`idSenarioEnCours`= Choix.`idSenario` AND utilisateur.`idSenarioEnCours` = ?',//car insacron pour que se soit bien a la suite
+        connection.query('SELECT SuitSenario FROM `utilisateur`,`Choix` WHERE utilisateur.`idSenarioEnCours`= Choix.`idSenario` AND utilisateur.`idSenarioEnCours` = ?',//car insacron,donc pour que se soit bien a la suite
             [idSenario],
-            (err, results) => { //verification des posibilité pour l'id actuelle de progresion A FAIR !!!
+            (err, results) => { //verification des posibilité pour l'id actuelle de progresion
                 if (err) {
                     console.error('Erreur lors de la lecture des posibilite :', err);
                     res.status(500).json({ message: 'Erreur serveur' });
@@ -166,33 +167,42 @@ app.post('/PassageSenario', (req, res) => {
                     return;
                 }
                 const longueur = results.length;
+                let numero;
+                let passage = 0;
                 for (let i = 0; i < longueur; i++) {
-                    let possibiliter = results[i];
-                    let passage =0;
+                    let possibiliter = results[i].SuitSenario;
                     if (VerSenario == possibiliter) {
-                        passage =1;
-                        connection.query( //sert a envoyer l'identifiant du nouveau chapitre
-                            'UPDATE utilisateur SET idSenarioEnCours = ? WHERE login = ? AND id = ?',
-                            [VerSenario, login, id],
-                            (err, results) => {
-                                if (err) {
-                                    console.error('Erreur lors de l\'insertion dans la base de données :', err);
-                                    res.status(500).json({ message: 'Erreur serveur' });
-                                    return;
-                                }
-                                else {
-                                    console.log('Insertion réussie :', results.insertId);
-                                    res.status(204).json({ message: '' });
-                                    return;
-                                }
-                            }
-                        );
-                    } else if (i == longueur && passage ==0) {
+                        passage = 1;
+                        numero = i;
+                        break;
+                    } else if (i == longueur - 1 && passage == 0) {
                         console.log('Valeur non conforme.');
-                        res.status(513).json({ message: 'Erreur serveur' });
-                        return;
                     }
                 }
+                if (passage == 1) {
+                    connection.query( //sert a envoyer l'identifiant du nouveau chapitre
+                        'UPDATE utilisateur SET idSenarioEnCours = ? WHERE login = ? AND id = ?',
+                        [VerSenario, login, id],
+                        (err, results) => {
+                            if (err) {
+                                console.error('Erreur lors de l\'insertion dans la base de données :', err);
+                                res.status(500).json({ message: 'Erreur serveur' });
+                                return;
+                            }
+                            else {
+                                console.log('Insertion réussie :', results.insertId);
+                                res.status(204).json({ message: '' });
+                                return;
+                            }
+                        }
+                    );
+                }
+                else {
+                    console.log('Valeur non conforme.');
+                    res.status(513).json({ message: 'Erreur serveur' });
+                    return;
+                }
+
             }
         );
     }
