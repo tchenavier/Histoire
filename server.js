@@ -27,9 +27,8 @@ connection.connect((err) => {
 });
 
 app.use(express.static('public'));
-app.use(express.json());//Pour découper en objet JSON, (pour utiliser JSON)
-//pour les route
-app.post('/register', (req, res) => {
+app.use(express.json());
+app.post('/register', (req, res) => { //enregistrement des utilisateur
     console.log('Données reçues pour l\'inscription');
     console.log(req.body);
     connection.query( //sert a envoyer les donner au serveur
@@ -93,7 +92,7 @@ app.post('/VerificationSenario', (req, res) => { //Pour le passage
     });
 });
 
-app.post('/PassageRole', (req, res) => { //Pour le passage
+app.post('/PassageRole', (req, res) => { //Pour l'obtention du rol, qu'une fois au chapitre 1 premier senario (au début du chapitre 1)
     console.log(req.body);
     //on récupère le login et l'id de l'utilisateur
     const { login, id, RoleViser } = req.body;//la requet fourni login;id et RoleViser
@@ -129,13 +128,11 @@ app.post('/PassageRole', (req, res) => { //Pour le passage
                     }
                 );
             }
-
         }
-
     });
 });
 
-app.post('/PassageSenario', (req, res) => {
+app.post('/PassageSenario', (req, res) => {//pour passer au prochaine senario
     console.log(req.body);
     //on récupère le login et le password
     const { login, id, VerSenario } = req.body;
@@ -145,7 +142,7 @@ app.post('/PassageSenario', (req, res) => {
             res.status(500).json({ message: 'Erreur serveur' });
             return;
         }
-        if (results.length === 0) {
+        else if (results.length === 0) {
             res.status(401).json({ message: '' });
             return;
         }
@@ -154,7 +151,7 @@ app.post('/PassageSenario', (req, res) => {
         }
 
         const idSenario = results[0].idSenarioEnCours;
-        connection.query('SELECT SuitSenario FROM `utilisateur`,`Choix` WHERE utilisateur.`idSenarioEnCours`= Choix.`idSenario` AND utilisateur.`idSenarioEnCours` = ?',//car insacron,donc pour que se soit bien a la suite
+        connection.query('SELECT SuitSenario FROM `utilisateur`,`Choix` WHERE utilisateur.`idSenarioEnCours`= Choix.`idSenario` AND utilisateur.`idSenarioEnCours` = ?',//car insacron, donc imbriquer pour que se soit bien a la suite
             [idSenario],
             (err, results) => { //verification des posibilité pour l'id actuelle de progresion
                 if (err) {
@@ -162,7 +159,7 @@ app.post('/PassageSenario', (req, res) => {
                     res.status(500).json({ message: 'Erreur serveur' });
                     return;
                 }
-                if (results.length === 0) {
+                else if (results.length === 0) {
                     res.status(401).json({ message: '' });
                     return;
                 }
@@ -200,14 +197,12 @@ app.post('/PassageSenario', (req, res) => {
                     res.status(513).json({ message: 'Erreur serveur' });
                     return;
                 }
-
             }
         );
-    }
-    );
+    });
 });
 
-app.post('/Texte', (req, res) => {
+app.post('/Texte', (req, res) => {//pour obtenir les information de quoi afficher (image, texte d'ambiance et le texte pour les choix et les choix) (texte d'ambiance a afficher en premier, puis le texte pour les choix)
     let idSenario;
     console.log(req.body);
     //on récupère le login et le password
@@ -218,11 +213,11 @@ app.post('/Texte', (req, res) => {
             res.status(500).json({ message: 'Erreur serveur' });
             return;//permet de pas exécuter se qui suit
         }
-        if (results.length === 0) {
+        else if (results.length === 0) {
             res.status(401).json({ message: '' });
             return;
         }
-        //res.json(idSenario);//pas erreur
+        //res.json(idSenario);//pas d erreur
         idSenario = results[0].idSenarioEnCours;
 
         if (idSenario == 500) {//car insacron, donc imbriquer pour que se soit bien a la suite
@@ -230,20 +225,31 @@ app.post('/Texte', (req, res) => {
             res.status(500).json({ message: 'Erreur serveur' });
             return;
         }
-        else {//car insacron, donc imbriquer pour que se soit bien a la suite
-            connection.query('SELECT Texte,ambiance,Audio FROM Senario WHERE id = ?', [idSenario], (err, results) => {//envoie les information du senario
+        else {
+            connection.query('SELECT Texte,ambiance,Audio FROM Senario WHERE id = ?', [idSenario], (err, Element) => {//envoie les information du senario
                 if (err) {
                     console.error('Erreur lors de la vérification des identifiants :', err);
                     res.status(500).json({ message: 'Erreur serveur' });
                     return;
                 }
-                if (results.length === 0) {
+                else if (Element.length === 0) {
                     res.status(401).json({ message: '' });
                     return;
                 }
-                // Identifiants valides 
-                //renvoi les informations du user
-                res.status(200).json({ user: results[0] });
+                connection.query('SELECT SuitSenario,choix FROM `utilisateur`,`Choix` WHERE utilisateur.`idSenarioEnCours`= Choix.`idSenario` AND utilisateur.`idSenarioEnCours` = ?',//car insacron, donc imbriquer pour que se soit bien a la suite
+                    [idSenario], (err, Choi) => {//envoie les choix
+                        if (err) {
+                            console.error('Erreur lors de la vérification des identifiants :', err);
+                            res.status(500).json({ message: 'Erreur serveur' });
+                            return;
+                        }
+                        else if (Choi.length === 0) {
+                            res.status(401).json({ message: '' });
+                            return;
+                        }
+                        //renvoi les informations du texte et des choix disponible
+                        res.status(200).json({ text: Element, Choix: Choi });
+                    });
             });
         }
     });
