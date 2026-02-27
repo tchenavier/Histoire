@@ -169,3 +169,31 @@ input {
     cursor: pointer;
     margin-bottom: 30px;
 }
+/* Icône de statut en haut à droite */
+#status-icon {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    z-index: 1000;
+    border: 2px solid #000;
+}
+
+.online {
+    background-color: #2ecc71; /* Vert */
+    box-shadow: 0 0 10px #2ecc71;
+}
+
+.offline {
+    background-color: #e74c3c; /* Rouge */
+    box-shadow: 0 0 10px #e74c3c;
+}
+
+/* Amélioration de la zone de texte fer forgé */
+.dialogue-container {
+    border: 4px double #2c2c2c !important; /* Couleur fer sombre */
+    background: rgba(10, 10, 10, 0.9) !important;
+    box-shadow: 0 0 15px #4a0000, inset 0 0 10px #000;
+}

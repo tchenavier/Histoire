@@ -255,7 +255,6 @@ app.post('/Texte', (req, res) => {//pour obtenir les information de quoi affiche
     });
 });
 
-
 app.listen(9000, () => { //express écoute sur le port 3000 et affiche un message dans la console
     console.log('server runing')
 });  //Le poind virgule c'est juste pour dire la fin de la fonction
