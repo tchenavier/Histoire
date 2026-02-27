@@ -2,7 +2,8 @@
     --gothic-black: #0a0a0a;
     --blood-red: #4a0000;
     --iron-grey: #2c2c2c;
-    --text-color: #d4af37; /* Or vieilli */
+    --text-color: #d4af37;
+    /* Or vieilli */
 }
 
 body {
@@ -11,16 +12,23 @@ body {
     background-color: var(--gothic-black);
     color: var(--text-color);
     font-family: 'Crimson Text', serif;
-    overflow: hidden; /* Empêche le scroll sur le jeu */
+    overflow: hidden;
+    /* Empêche le scroll sur le jeu */
 }
 
-h1, h2, .choice-btn {
+h1,
+h2,
+.choice-btn {
     font-family: 'Cinzel', serif;
     text-transform: uppercase;
     letter-spacing: 2px;
 }
 
 /* --- CONNEXION --- */
+.form-title {
+    text-align: center;
+}
+
 .login-container {
     height: 100vh;
     display: flex;
@@ -33,7 +41,7 @@ h1, h2, .choice-btn {
     padding: 40px;
     background: rgba(10, 10, 10, 0.9);
     border: 2px solid var(--iron-grey);
-    box-shadow: 0 0 20px rgba(0,0,0,1), inset 0 0 10px var(--blood-red);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 1), inset 0 0 10px var(--blood-red);
     text-align: center;
 }
 
@@ -75,7 +83,10 @@ input {
     object-fit: cover;
 }
 
-.chapter-info { padding: 10px; text-align: center; }
+.chapter-info {
+    padding: 10px;
+    text-align: center;
+}
 
 /* --- INTERFACE VISUAL NOVEL --- */
 #game-interface {
@@ -112,14 +123,14 @@ input {
     min-height: 120px;
     background: rgba(0, 0, 0, 0.85);
     padding: 20px 30px;
-    
+
     /* Le fer forgé simulé par les bordures et ombres */
     border: 4px double #333;
     border-radius: 15px;
-    box-shadow: 
-        0 0 0 2px #000, 
+    box-shadow:
+        0 0 0 2px #000,
         0 0 15px var(--blood-red),
-        inset 0 0 20px rgba(0,0,0,0.5);
+        inset 0 0 20px rgba(0, 0, 0, 0.5);
     z-index: 10;
 }
 
@@ -127,7 +138,8 @@ input {
 .dialogue-container::before {
     content: "◈";
     position: absolute;
-    top: -10px; left: -10px;
+    top: -10px;
+    left: -10px;
     color: var(--iron-grey);
     font-size: 24px;
 }
@@ -135,7 +147,8 @@ input {
 /* Zone des choix - Alignée à droite au dessus du texte */
 .choice-container {
     position: absolute;
-    bottom: 160px; /* Juste au dessus de la boite de dialogue */
+    bottom: 160px;
+    /* Juste au dessus de la boite de dialogue */
     right: 10%;
     display: flex;
     flex-direction: column;
@@ -169,6 +182,7 @@ input {
     cursor: pointer;
     margin-bottom: 30px;
 }
+
 /* Icône de statut en haut à droite */
 #status-icon {
     position: fixed;
@@ -182,18 +196,21 @@ input {
 }
 
 .online {
-    background-color: #2ecc71; /* Vert */
+    background-color: #2ecc71;
+    /* Vert */
     box-shadow: 0 0 10px #2ecc71;
 }
 
 .offline {
-    background-color: #e74c3c; /* Rouge */
+    background-color: #e74c3c;
+    /* Rouge */
     box-shadow: 0 0 10px #e74c3c;
 }
 
 /* Amélioration de la zone de texte fer forgé */
 .dialogue-container {
-    border: 4px double #2c2c2c !important; /* Couleur fer sombre */
+    border: 4px double #2c2c2c !important;
+    /* Couleur fer sombre */
     background: rgba(10, 10, 10, 0.9) !important;
     box-shadow: 0 0 15px #4a0000, inset 0 0 10px #000;
 }

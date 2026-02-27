@@ -86,6 +86,9 @@ app.post('/VerificationSenario', (req, res) => { //Pour récupérer le Scenario 
             console.error('Erreur lors de la récupération des utilisateurs :', err);
             res.status(500).json({ message: 'Erreur serveur' });
             return;//permet de pas exécuter se qui suit
+        } else if (results.length === 0) {
+            res.status(401).json({ message: '' });
+            return;
         }
         res.status(200).json(results);//pas d erreur
         return;
@@ -226,7 +229,7 @@ app.post('/Texte', (req, res) => {//pour obtenir les information de quoi affiche
             return;
         }
         else {
-            connection.query('SELECT Texte,ambiance,Audio FROM Senario WHERE id = ?', [idSenario], (err, Element) => {//envoie les information du senario
+            connection.query('SELECT Texte,ambiance,Audio,nomImage FROM Senario WHERE id = ?', [idSenario], (err, Element) => {//envoie les information du senario
                 if (err) {
                     console.error('Erreur lors de la vérification des identifiants :', err);
                     res.status(500).json({ message: 'Erreur serveur' });
@@ -236,20 +239,32 @@ app.post('/Texte', (req, res) => {//pour obtenir les information de quoi affiche
                     res.status(401).json({ message: '' });
                     return;
                 }
-                connection.query('SELECT SuitSenario,choix FROM `utilisateur`,`Choix` WHERE utilisateur.`idSenarioEnCours`= Choix.`idSenario` AND utilisateur.`idSenarioEnCours` = ?',//car insacron, donc imbriquer pour que se soit bien a la suite
-                    [idSenario], (err, Choi) => {//envoie les choix disponible (lier au scenario en cours)
-                        if (err) {
-                            console.error('Erreur lors de la vérification des identifiants :', err);
-                            res.status(500).json({ message: 'Erreur serveur' });
-                            return;
+                connection.query('SELECT nomPersonnage,nomImagePersonnage FROM `utilisateur`,`Senario`,`AssosiationPersonnage`,`Personnage` WHERE utilisateur.`idSenarioEnCours`= Senario.`id`= AssosiationPersonnage.`idSenario` AND AssosiationPersonnage.`idPersonnage`= Personnage.`id` AND utilisateur.`idSenarioEnCours` = ?',
+                    [login, id], (err, personnage) => {// pour récupéréer les peronnage présent
+                    if (err) {
+                        console.error('Erreur lors de la récupération des utilisateurs :', err);
+                        res.status(500).json({ message: 'Erreur serveur' });
+                        return;
+                    } else if (personnage.length === 0) {
+                        res.status(401).json({ message: '' });
+                        return;
+                    }
+                    connection.query('SELECT SuitSenario,choix FROM `utilisateur`,`Choix` WHERE utilisateur.`idSenarioEnCours`= Choix.`idSenario` AND utilisateur.`idSenarioEnCours` = ?',//car insacron, donc imbriquer pour que se soit bien a la suite
+                        [idSenario], (err, Choi) => {//envoie les choix disponible (lier au scenario en cours)
+                            if (err) {
+                                console.error('Erreur lors de la vérification des identifiants :', err);
+                                res.status(500).json({ message: 'Erreur serveur' });
+                                return;
+                            }
+                            else if (Choi.length === 0) {
+                                res.status(401).json({ message: '' });
+                                return;
+                            }
+                            //renvoi les informations du texte et des choix disponible
+                            res.status(200).json({ text: Element, Choix: Choi, Personnage: personnage });
                         }
-                        else if (Choi.length === 0) {
-                            res.status(401).json({ message: '' });
-                            return;
-                        }
-                        //renvoi les informations du texte et des choix disponible
-                        res.status(200).json({ text: Element, Choix: Choi });
-                    });
+                    );
+                });
             });
         }
     });
