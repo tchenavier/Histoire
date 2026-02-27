@@ -77,7 +77,7 @@ app.post('/connexion', (req, res) => {
     });
 });
 
-app.post('/VerificationSenario', (req, res) => { //Pour le passage
+app.post('/VerificationSenario', (req, res) => { //Pour récupérer le Scenario en cour
     console.log(req.body);
     //on récupère le login et le password
     const { login, id, VerSenario, idSenario } = req.body;
@@ -237,7 +237,7 @@ app.post('/Texte', (req, res) => {//pour obtenir les information de quoi affiche
                     return;
                 }
                 connection.query('SELECT SuitSenario,choix FROM `utilisateur`,`Choix` WHERE utilisateur.`idSenarioEnCours`= Choix.`idSenario` AND utilisateur.`idSenarioEnCours` = ?',//car insacron, donc imbriquer pour que se soit bien a la suite
-                    [idSenario], (err, Choi) => {//envoie les choix
+                    [idSenario], (err, Choi) => {//envoie les choix disponible (lier au scenario en cours)
                         if (err) {
                             console.error('Erreur lors de la vérification des identifiants :', err);
                             res.status(500).json({ message: 'Erreur serveur' });
