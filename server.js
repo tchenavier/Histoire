@@ -239,8 +239,8 @@ app.post('/Texte', (req, res) => {//pour obtenir les information de quoi affiche
                     res.status(401).json({ message: '' });
                     return;
                 }
-                connection.query('SELECT nomPersonnage,nomImagePersonnage FROM `utilisateur`,`Senario`,`AssosiationPersonnage`,`Personnage` WHERE utilisateur.`idSenarioEnCours`= Senario.`id`= AssosiationPersonnage.`idSenario` AND AssosiationPersonnage.`idPersonnage`= Personnage.`id` AND utilisateur.`idSenarioEnCours` = ?',
-                    [login, id], (err, personnage) => {// pour récupéréer les peronnage présent
+                connection.query('SELECT Personnage.nomPersonnage, Personnage.nomImagePersonnage FROM `utilisateur`, `AssosiationPersonnage`, `Personnage` WHERE utilisateur.`idSenarioEnCours` = AssosiationPersonnage.`idSenario` AND AssosiationPersonnage.`idPersonnage` = Personnage.`id` AND utilisateur.`idSenarioEnCours` = ?',
+                    [idSenario], (err, personnage) => {// pour récupéréer les peronnage présent
                     if (err) {
                         console.error('Erreur lors de la récupération des utilisateurs :', err);
                         res.status(500).json({ message: 'Erreur serveur' });
