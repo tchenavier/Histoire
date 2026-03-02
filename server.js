@@ -77,6 +77,45 @@ app.post('/connexion', (req, res) => {
     });
 });
 
+app.post('/ChargementChapite', (req, res) => { //Pour l'obtention du rol, qu'une fois au chapitre 1 premier senario (au début du chapitre 1)
+    console.log(req.body);
+    //on récupère le login et l'id de l'utilisateur
+    const { login, id, ChapitreViser } = req.body;//la requet fourni login;id et RoleViser
+    connection.query('SELECT chapitreMax, FROM utilisateur WHERE login = ? AND id = ?', [login, id], (err, results) => {// * pour tout selectionner
+        if (err) {//si erreur
+            console.error('Erreur lors de la récupération des utilisateurs :', err);
+            res.status(500).json({ message: 'Erreur serveur' });
+            return;//permet de ne pas exécuter se qui suit
+        }
+        if (results.length === 0) {
+            res.status(401).json({ message: '' });
+            return;
+        }
+        else {
+            const idSenario = results;
+
+            if (ChapitreViser <= results) {//controle
+                connection.query(
+                    'UPDATE utilisateur SET chapitre = ?, idSenarioEnCours = 1 WHERE login = ? AND id = ?',
+                    [ChapitreViser, login, id],
+                    (err, results) => {
+                        if (err) {
+                            console.error('Erreur lors de l\'insertion dans la base de données :', err);
+                            res.status(500).json({ message: 'Erreur serveur' });
+                            return;
+                        }
+                        else {
+                            console.log('Insertion réussie :', results.insertId);
+                            res.status(204).json({ message: '' });
+                            return;
+                        }
+                    }
+                );
+            }
+        }
+    });
+});
+
 app.post('/VerificationSenario', (req, res) => { //Pour récupérer le Scenario en cour
     console.log(req.body);
     //on récupère le login et le password
