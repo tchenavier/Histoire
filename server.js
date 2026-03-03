@@ -77,7 +77,7 @@ app.post('/connexion', (req, res) => {
     });
 });
 
-app.post('/ChargementChapite', (req, res) => { //Pour l'obtention du rol, qu'une fois au chapitre 1 premier senario (au début du chapitre 1)
+app.post('/ChargementChapite', (req, res) => { //Chargement du premier senario du chapitre, verification avant que l'utilisateur peut accéder au chapitre
     console.log(req.body);
     //on récupère le login et l'id de l'utilisateur
     const { login, id, ChapitreViser } = req.body;//la requet fourni login;id et RoleViser
@@ -105,7 +105,7 @@ app.post('/ChargementChapite', (req, res) => { //Pour l'obtention du rol, qu'une
                             return;
                         }
                         else {
-                            console.log('Insertion réussie :', results.insertId);
+                            console.log('chargement fini :', results.insertId);
                             res.status(204).json({ message: '' });
                             return;
                         }
