@@ -81,22 +81,22 @@ app.post('/ChargementChapite', (req, res) => { //Chargement du premier senario d
     console.log(req.body);
     //on récupère le login et l'id de l'utilisateur
     const { login, id, ChapitreViser } = req.body;//la requet fourni login;id et RoleViser
-    connection.query('SELECT chapitreMax, FROM utilisateur WHERE login = ? AND id = ?', [login, id], (err, results) => {// * pour tout selectionner
+    connection.query('SELECT idChapitreMax FROM utilisateur WHERE login = ? AND id = ?', [login, id], (err, results) => {// * pour tout selectionner
         if (err) {//si erreur
             console.error('Erreur lors de la récupération des utilisateurs :', err);
             res.status(500).json({ message: 'Erreur serveur' });
             return;//permet de ne pas exécuter se qui suit
         }
-        if (results.length === 0) {
+        else if (results.length === 0) {
             res.status(401).json({ message: '' });
             return;
         }
         else {
-            const idSenario = results;
+            const idChapitreMax = results[0];
 
-            if (ChapitreViser <= results) {//controle
+            if (ChapitreViser <= idChapitreMax) {//controle
                 connection.query(
-                    'UPDATE utilisateur SET chapitre = ?, idSenarioEnCours = 1 WHERE login = ? AND id = ?',
+                    'UPDATE utilisateur SET IdChapitreEnCour = ?, idSenarioEnCours = 1 WHERE login = ? AND id = ?',
                     [ChapitreViser, login, id],
                     (err, results) => {
                         if (err) {
