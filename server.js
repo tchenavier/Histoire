@@ -69,11 +69,11 @@ app.post('/connexion', (req, res) => {
         res.status(202).json({ user: results[0] });
         const filePath = path.join(__dirname, 'public', 'visualNovel.html');//envois la page du jeu
         // __dirname: répertoire du fichier JS actuel
-        res.sendFile(filePath, (err) => {
-            if (err) {
-                console.error('Erreur d envoi du fichier:', err);
-            }
-        });
+        /* res.sendFile(filePath, (err) => {
+             if (err) {
+                 console.error('Erreur d envoi du fichier:', err);
+             }
+         });*/
     });
 });
 
@@ -306,12 +306,9 @@ app.post('/Texte', (req, res) => {//pour obtenir les information de quoi affiche
                             console.error('Erreur lors de la récupération des utilisateurs :', err);
                             res.status(500).json({ message: 'Erreur serveur' });
                             return;
-                        } else if (personnage.length === 0) {
-                            res.status(401).json({ message: '' });
-                            return;
                         }
-                        connection.query('SELECT SuitSenario,choix FROM `utilisateur`,`Choix` WHERE utilisateur.`idSenarioEnCours`= Choix.`idSenario` AND utilisateur.`idSenarioEnCours` = ?',//car insacron, donc imbriquer pour que se soit bien a la suite
-                            [idSenario], (err, Choi) => {//envoie les choix disponible (lier au scenario en cours)
+                        connection.query('SELECT SuitSenario,choix FROM `utilisateur`,`Choix` WHERE utilisateur.`idSenarioEnCours`= Choix.`idSenario` AND utilisateur.`id` = ?',//car insacron, donc imbriquer pour que se soit bien a la suite
+                            [id], (err, Choi) => {//envoie les choix disponible (lier au scenario en cours)
                                 if (err) {
                                     console.error('Erreur lors de la vérification des identifiants :', err);
                                     res.status(500).json({ message: 'Erreur serveur' });
@@ -323,6 +320,7 @@ app.post('/Texte', (req, res) => {//pour obtenir les information de quoi affiche
                                 }
                                 //renvoi les informations du texte et des choix disponible
                                 res.status(200).json({ text: Element, Choix: Choi, Personnage: personnage });
+                                return;
                             }
                         );
                     });

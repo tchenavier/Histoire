@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-   <!-- <meta http-equiv="Content-Security-policy" content="default-src 'self';style-src 'self'; script-src 'self';child-src 'none';">-->
+    <!-- <meta http-equiv="Content-Security-policy" content="default-src 'self';style-src 'self'; script-src 'self';child-src 'none';">-->
     <title>accueil</title>
     <link rel='stylesheet' type='text/css' href='css/styleGame.css'>
 
@@ -15,7 +15,10 @@
 
     <div id="selection-screen">
         <h1 class="form-title">Chroniques</h1>
-        
+        <div class="user-controls">
+            <div id="status-icon" class="offline"></div>
+            <button id="logout-btn" class="gothic-btn small">Quitter</button>
+        </div>
         <div>
             <button class="btn-resume">CONTINUER L'AVENTURE</button>
         </div>
@@ -33,11 +36,11 @@
                     <h3>II. Le début des ennuis</h3>
                 </div>
             </div>
-            </div>
+        </div>
     </div>
 
     <div id="game-interface" style="display: none; background-image: url('images/decor_chateau.jpg');">
-        
+
         <div class="characters-layer">
             <img src="images/Exemple" class="character" alt="Démon">
         </div>
