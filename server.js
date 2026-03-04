@@ -77,7 +77,7 @@ app.post('/connexion', (req, res) => {
     });
 });
 
-app.post('/ChargementChapite', (req, res) => { //Chargement du premier senario du chapitre, verification avant que l'utilisateur peut accéder au chapitre
+app.post('/changementDuChapitre', (req, res) => { //Chargement du premier senario du chapitre, verification avant que l'utilisateur peut accéder au chapitre
     console.log(req.body);
     //on récupère le login et l'id de l'utilisateur
     const { login, id, ChapitreViser } = req.body;//la requet fourni login;id et RoleViser
@@ -92,25 +92,47 @@ app.post('/ChargementChapite', (req, res) => { //Chargement du premier senario d
             return;
         }
         else {
-            const idChapitreMax = results[0];
+            const idChapitreMax = results[0].idChapitreMax;
+            const objectifChapitre = parseInt(ChapitreViser, 10);
 
-            if (ChapitreViser <= idChapitreMax) {//controle
-                connection.query(
-                    'UPDATE utilisateur SET IdChapitreEnCour = ?, idSenarioEnCours = 1 WHERE login = ? AND id = ?',
-                    [ChapitreViser, login, id],
-                    (err, results) => {
-                        if (err) {
-                            console.error('Erreur lors de l\'insertion dans la base de données :', err);
-                            res.status(500).json({ message: 'Erreur serveur' });
-                            return;
+            if (objectifChapitre <= idChapitreMax) {//controle
+                if (objectifChapitre == 1) {
+                    connection.query(
+                        'UPDATE utilisateur SET IdChapitreEnCour = 1, idSenarioEnCours = 1 WHERE login = ? AND id = ?',
+                        [login, id],
+                        (err, results) => {
+                            if (err) {
+                                console.error('Erreur lors de l\'insertion dans la base de données :', err);
+                                res.status(500).json({ message: 'Erreur serveur' });
+                                return;
+                            }
+                            else if (results.length === 0) {
+                                res.status(401).json({ message: '' });
+                                return;
+                            }
+                            else {
+                                console.log('chargement fini :', results.insertId);
+                                res.status(204).json({ message: '' });
+                                return;
+                            }
+
                         }
-                        else {
-                            console.log('chargement fini :', results.insertId);
-                            res.status(204).json({ message: '' });
-                            return;
-                        }
-                    }
-                );
+                    );
+                } else if (objectifChapitre == 2) {
+                    console.error('Erreur lors de l\'insertion dans la base de données :', err);
+                    res.status(403).json({ message: '' });
+                    return;
+                }
+                else {
+                    console.error('Erreur lors de l\'insertion dans la base de données :', err);
+                    res.status(403).json({ message: 'inexistant' });
+                    return;
+                }
+            }
+            else {
+                console.error('Erreur lors de l\'insertion dans la base de données :', err);
+                res.status(400).json({ message: '' });
+                return;
             }
         }
     });
@@ -280,30 +302,30 @@ app.post('/Texte', (req, res) => {//pour obtenir les information de quoi affiche
                 }
                 connection.query('SELECT Personnage.nomPersonnage, Personnage.nomImagePersonnage FROM `utilisateur`, `AssosiationPersonnage`, `Personnage` WHERE utilisateur.`idSenarioEnCours` = AssosiationPersonnage.`idSenario` AND AssosiationPersonnage.`idPersonnage` = Personnage.`id` AND utilisateur.`idSenarioEnCours` = ?',
                     [idSenario], (err, personnage) => {// pour récupéréer les peronnage présent
-                    if (err) {
-                        console.error('Erreur lors de la récupération des utilisateurs :', err);
-                        res.status(500).json({ message: 'Erreur serveur' });
-                        return;
-                    } else if (personnage.length === 0) {
-                        res.status(401).json({ message: '' });
-                        return;
-                    }
-                    connection.query('SELECT SuitSenario,choix FROM `utilisateur`,`Choix` WHERE utilisateur.`idSenarioEnCours`= Choix.`idSenario` AND utilisateur.`idSenarioEnCours` = ?',//car insacron, donc imbriquer pour que se soit bien a la suite
-                        [idSenario], (err, Choi) => {//envoie les choix disponible (lier au scenario en cours)
-                            if (err) {
-                                console.error('Erreur lors de la vérification des identifiants :', err);
-                                res.status(500).json({ message: 'Erreur serveur' });
-                                return;
-                            }
-                            else if (Choi.length === 0) {
-                                res.status(401).json({ message: '' });
-                                return;
-                            }
-                            //renvoi les informations du texte et des choix disponible
-                            res.status(200).json({ text: Element, Choix: Choi, Personnage: personnage });
+                        if (err) {
+                            console.error('Erreur lors de la récupération des utilisateurs :', err);
+                            res.status(500).json({ message: 'Erreur serveur' });
+                            return;
+                        } else if (personnage.length === 0) {
+                            res.status(401).json({ message: '' });
+                            return;
                         }
-                    );
-                });
+                        connection.query('SELECT SuitSenario,choix FROM `utilisateur`,`Choix` WHERE utilisateur.`idSenarioEnCours`= Choix.`idSenario` AND utilisateur.`idSenarioEnCours` = ?',//car insacron, donc imbriquer pour que se soit bien a la suite
+                            [idSenario], (err, Choi) => {//envoie les choix disponible (lier au scenario en cours)
+                                if (err) {
+                                    console.error('Erreur lors de la vérification des identifiants :', err);
+                                    res.status(500).json({ message: 'Erreur serveur' });
+                                    return;
+                                }
+                                else if (Choi.length === 0) {
+                                    res.status(401).json({ message: '' });
+                                    return;
+                                }
+                                //renvoi les informations du texte et des choix disponible
+                                res.status(200).json({ text: Element, Choix: Choi, Personnage: personnage });
+                            }
+                        );
+                    });
             });
         }
     });
