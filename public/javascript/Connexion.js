@@ -50,5 +50,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error("Erreur:", error);
         }
+        //affiche si il y a une erreur lors de l'inscription.
     });
 });

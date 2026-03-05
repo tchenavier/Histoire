@@ -50,8 +50,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if(info.ambiance) gameInterface.style.backgroundImage = `url('images/${info.ambiance}')`;
         speakerName.innerText = "Narrateur"; // Ou info.nom si tu ajoutes une colonne nom
         dialogueText.innerText = info.Texte;
-
         // On vide et on génère les boutons de choix
+
         choiceContainer.innerHTML = '';
         choix.forEach(c => {
             const btn = document.createElement('button');
@@ -61,8 +61,8 @@ document.addEventListener('DOMContentLoaded', () => {
             choiceContainer.appendChild(btn);
         });
     }
-
     // Envoie le choix au serveur pour passer au scénario suivant
+
     async function selectChoice(nextId) {
         try {
             const response = await fetch('/PassageSenario', {
@@ -118,3 +118,4 @@ document.addEventListener('DOMContentLoaded', () => {
          window.location.href = 'index.html';
         });
 });
+//fonction anonyme qui permet de ce deconnecter et de supprimer le LocalStorage et de rediriger vers la page de connexion (index.html).
