@@ -1,6 +1,5 @@
 var TextInitial = document.getElementById("TextInitial");
 
-
 TextInitial.addEventListener("DOMContentLoaded", verification);
 
 
@@ -17,3 +16,4 @@ function verification(evenement) {
     }
 
 }
+
