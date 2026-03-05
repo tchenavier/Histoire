@@ -1,44 +1,86 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
 
 /* ============================================================
-   VARIABLES & RESET
+   VARIABLES
    ============================================================ */
 :root {
-    --gothic-black: #0a0a0a;
-    --blood-red: #4a0000;
-    --blood-red-bright: #7a0000;
-    --iron-grey: #2c2c2c;
+    --gothic-black:    #0a0a0a;
+    --deep-black:      #060606;
+    --blood-red:       #4a0000;
+    --blood-red-bright:#7a0000;
+    --iron-grey:       #2c2c2c;
     --iron-grey-light: #444;
-    --text-color: #d4af37;
-    --text-dim: #8a6f1e;
-    --white-smoke: #e8e8e8;
-    --glow-red: rgba(74, 0, 0, 0.6);
-    --glow-gold: rgba(212, 175, 55, 0.3);
+    --text-color:      #d4af37;
+    --text-dim:        #8a6f1e;
+    --silver:          #c0c0c0;
+    --silver-bright:   #e8e8e8;
+    --white-smoke:     #f0f0f0;
+    --glow-red:        rgba(74,  0,  0, 0.6);
+    --glow-gold:       rgba(212,175, 55, 0.3);
+    --glow-silver:     rgba(192,192,192, 0.25);
 }
 
-*, *::before, *::after {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-body {
-    margin: 0;
-    padding: 0;
-    background-color: var(--gothic-black);
+html, body {
+    width: 100%; height: 100%;
+    background-color: var(--deep-black);
     color: var(--text-color);
     font-family: 'Crimson Text', serif;
-    min-height: 100vh;
+    overflow: hidden;
 }
 
-h1, h2, .choice-btn {
+h1, h2, h3, h4, .choice-btn, .bouton {
     font-family: 'Cinzel', serif;
     text-transform: uppercase;
     letter-spacing: 2px;
 }
 
 /* ============================================================
-   SIGNIN PAGE — fond animé avec vignette
+   TITRE — métal argenté gravé
+   ============================================================ */
+.form-title {
+    font-family: 'Cinzel', serif;
+    text-transform: uppercase;
+    letter-spacing: 6px;
+    font-size: clamp(1.3rem, 3vw, 1.8rem);
+    font-weight: 900;
+    text-align: center;
+    position: relative;
+    background: linear-gradient(
+        180deg,
+        #ffffff 0%,
+        #c8c8c8 18%,
+        #909090 38%,
+        #e2e2e2 52%,
+        #787878 68%,
+        #b0b0b0 82%,
+        #d8d8d8 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter:
+        drop-shadow(0  1px 0 rgba(255,255,255,0.2))
+        drop-shadow(0 -1px 0 rgba(0,0,0,0.9))
+        drop-shadow(0  0  20px rgba(180,180,180,0.15));
+}
+
+.form-title::after {
+    content: '';
+    display: block;
+    width: 120px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #888, #ccc, #888, transparent);
+    margin: 12px auto 0;
+    box-shadow: 0 0 8px rgba(180,180,180,0.35);
+}
+
+/* ============================================================
+   LOGIN PAGE
    ============================================================ */
 body.signin-page {
     display: flex;
@@ -47,365 +89,405 @@ body.signin-page {
     min-height: 100vh;
     overflow: hidden;
     background:
-        radial-gradient(ellipse at 50% 0%, #2a0000 0%, transparent 60%),
-        radial-gradient(ellipse at 50% 100%, #1a0000 0%, transparent 60%),
-        #060606;
+        radial-gradient(ellipse at 50%   0%, #2a0000 0%, transparent 55%),
+        radial-gradient(ellipse at 50% 100%, #1a0000 0%, transparent 55%),
+        var(--deep-black);
     animation: bgPulse 8s ease-in-out infinite alternate;
 }
-
 @keyframes bgPulse {
-    from { background-position: 50% 0%, 50% 100%; }
-    to   {
+    to {
         background:
-            radial-gradient(ellipse at 50% 0%, #3a0000 0%, transparent 60%),
-            radial-gradient(ellipse at 50% 100%, #2a0000 0%, transparent 60%),
-            #060606;
+            radial-gradient(ellipse at 50%   0%, #380000 0%, transparent 55%),
+            radial-gradient(ellipse at 50% 100%, #280000 0%, transparent 55%),
+            var(--deep-black);
     }
 }
-
-/* Particules de poussière / effet vieux parchemin en ::before du body */
 body.signin-page::before {
     content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.35;
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 0; opacity: 0.3;
 }
 
-/* ============================================================
-   FORM SIGNIN — carte centrale
-   ============================================================ */
 .form-signin {
-    position: relative;
-    z-index: 1;
+    position: relative; z-index: 1;
     width: min(440px, 92vw);
-    padding: clamp(30px, 5vw, 55px) clamp(25px, 5vw, 50px);
-    background: rgba(8, 5, 5, 0.92);
+    padding: clamp(30px,5vw,55px) clamp(25px,5vw,50px);
+    background: rgba(8,5,5,0.93);
     border: 1px solid var(--iron-grey);
     box-shadow:
         0 0 0 1px #000,
         0 0 40px var(--glow-red),
-        0 0 80px rgba(74, 0, 0, 0.2),
+        0 0 80px rgba(74,0,0,0.2),
         inset 0 0 30px rgba(0,0,0,0.8);
-    animation: cardReveal 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: cardReveal 0.9s cubic-bezier(0.22,1,0.36,1) both;
 }
-
 @keyframes cardReveal {
-    from {
-        opacity: 0;
-        transform: translateY(30px) scale(0.97);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
+    from { opacity:0; transform: translateY(30px) scale(0.97); }
+    to   { opacity:1; transform: translateY(0)    scale(1);    }
 }
-
-/* Ornements aux coins */
-.form-signin::before,
-.form-signin::after {
-    font-family: 'Cinzel', serif;
-    position: absolute;
-    color: var(--iron-grey-light);
-    font-size: 20px;
-    line-height: 1;
-    transition: color 0.4s;
-}
-.form-signin::before {
-    content: "◈";
-    top: -12px;
-    left: -12px;
-}
-.form-signin::after {
-    content: "◈";
-    bottom: -12px;
-    right: -12px;
-}
-
-/* Ligne décorative en haut */
+.form-signin::before { content:"◈"; position:absolute; top:-12px;    left:-12px;  color:var(--iron-grey-light); font-size:20px; }
+.form-signin::after  { content:"◈"; position:absolute; bottom:-12px; right:-12px; color:var(--iron-grey-light); font-size:20px; }
 .form-signin > form::before {
-    content: '';
-    display: block;
-    height: 1px;
+    content:''; display:block; height:1px;
     background: linear-gradient(90deg, transparent, var(--blood-red-bright), transparent);
-    margin-bottom: clamp(20px, 4vw, 35px);
+    margin-bottom: clamp(20px,4vw,35px);
 }
+.form-signin .form-title { margin-bottom: clamp(25px,4vw,40px); }
 
-/* ============================================================
-   TITRE — effet métal argenté gravé
-   ============================================================ */
-.form-title {
-    font-family: 'Cinzel', serif;
-    text-transform: uppercase;
-    letter-spacing: 8px;
-    font-size: clamp(1.4rem, 4vw, 2rem);
-    font-weight: 900;
-    text-align: center;
-    margin-bottom: clamp(25px, 4vw, 40px);
-    position: relative;
-
-    /* Dégradé métallique argent */
-    background: linear-gradient(
-        180deg,
-        #ffffff 0%,
-        #c8c8c8 20%,
-        #9a9a9a 40%,
-        #e8e8e8 55%,
-        #7a7a7a 70%,
-        #b0b0b0 85%,
-        #d6d6d6 100%
-    );
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-
-    /* Relief de gravure */
-    filter: drop-shadow(0 1px 0 rgba(255,255,255,0.25))
-            drop-shadow(0 -1px 0 rgba(0,0,0,0.8))
-            drop-shadow(0 0 18px rgba(180,180,180,0.2));
-}
-
-.form-title::before {
-    content: '— ';
-    -webkit-text-fill-color: #666;
-    color: #666;
-    font-size: 0.6em;
-    letter-spacing: 2px;
-}
-
-.form-title::after {
-    content: '';
-    display: block;
-    width: 80px;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, #888, #ccc, #888, transparent);
-    margin: 10px auto 0;
-    box-shadow: 0 0 6px rgba(180,180,180,0.4);
-}
-
-/* ============================================================
-   GROUPES DE CHAMPS
-   ============================================================ */
-.form-group {
-    position: relative;
-    margin-bottom: clamp(18px, 3vw, 28px);
-}
-
+.form-group { position:relative; margin-bottom: clamp(18px,3vw,28px); }
 .form-group label {
-    display: block;
-    font-family: 'Cinzel', serif;
-    font-size: 0.7rem;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    margin-bottom: 8px;
-    transition: color 0.3s;
+    display:block; font-family:'Cinzel',serif; font-size:0.68rem;
+    letter-spacing:3px; text-transform:uppercase; color:var(--text-dim);
+    margin-bottom:8px; transition: color 0.3s;
 }
+.form-group:focus-within label { color: var(--text-color); }
 
-.form-group:focus-within label {
-    color: var(--text-color);
-}
-
-/* Inputs */
-input[type="email"],
-input[type="password"],
-input[type="text"] {
-    display: block;
-    width: 100%;
-    padding: 12px 16px;
-    background: rgba(15, 8, 8, 0.9);
+input[type="email"], input[type="password"], input[type="text"] {
+    display:block; width:100%; padding:12px 16px;
+    background: rgba(15,8,8,0.9);
     border: 1px solid var(--iron-grey);
     border-bottom: 2px solid var(--iron-grey);
     color: var(--white-smoke);
-    font-family: 'Crimson Text', serif;
-    font-size: 1.05rem;
-    outline: none;
+    font-family:'Crimson Text',serif; font-size:1.05rem;
+    outline:none; border-radius:2px;
     transition: border-color 0.3s, box-shadow 0.3s;
-    border-radius: 2px;
 }
-
-input[type="email"]:focus,
-input[type="password"]:focus,
-input[type="text"]:focus {
+input[type="email"]:focus, input[type="password"]:focus {
     border-color: var(--blood-red-bright);
     border-bottom-color: var(--text-color);
-    box-shadow: 0 4px 15px rgba(74, 0, 0, 0.4), inset 0 0 8px rgba(0,0,0,0.5);
-    color: #fff;
+    box-shadow: 0 4px 15px rgba(74,0,0,0.4), inset 0 0 8px rgba(0,0,0,0.5);
+    color:#fff;
 }
 
-input[type="email"]::placeholder,
-input[type="password"]::placeholder {
-    color: #333;
-}
-
-/* ============================================================
-   BOUTONS
-   ============================================================ */
 .bouton {
-    display: block;
-    width: 100%;
-    padding: clamp(11px, 2vw, 14px) 20px;
-    font-family: 'Cinzel', serif;
-    font-size: clamp(0.75rem, 2vw, 0.85rem);
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    cursor: pointer;
-    border-radius: 2px;
-    transition: all 0.25s ease;
-    margin-top: 10px;
+    display:block; width:100%;
+    padding: clamp(11px,2vw,14px) 20px;
+    font-family:'Cinzel',serif; font-size: clamp(0.75rem,2vw,0.85rem);
+    letter-spacing:4px; text-transform:uppercase;
+    cursor:pointer; border-radius:2px;
+    transition: all 0.25s ease; margin-top:10px;
 }
-
 #button1 {
-    background: var(--blood-red);
-    color: var(--text-color);
+    background: var(--blood-red); color: var(--text-color);
     border: 1px solid #6a0000;
     box-shadow: 0 0 15px var(--glow-red), inset 0 1px 0 rgba(255,255,255,0.05);
 }
-
-#button1:hover,
-#button1:focus {
-    background: var(--blood-red-bright);
-    color: #fff;
-    box-shadow: 0 0 25px rgba(122, 0, 0, 0.8), 0 0 50px rgba(74, 0, 0, 0.4);
-    transform: translateY(-1px);
-}
-
-#button1:active {
-    transform: translateY(0);
-    box-shadow: 0 0 10px var(--glow-red);
-}
-
-#button2 {
-    background: transparent;
-    color: var(--text-dim);
-    border: 1px solid var(--iron-grey);
-}
-
-#button2:hover,
-#button2:focus {
-    background: rgba(44, 44, 44, 0.4);
-    color: var(--text-color);
-    border-color: var(--iron-grey-light);
-    transform: translateY(-1px);
-}
-
-/* Séparateur entre les deux boutons */
-#button2 {
-    margin-top: 8px;
-    position: relative;
-}
+#button1:hover { background:var(--blood-red-bright); color:#fff; box-shadow:0 0 25px rgba(122,0,0,0.8); transform:translateY(-1px); }
+#button2 { background:transparent; color:var(--text-dim); border:1px solid var(--iron-grey); }
+#button2:hover { background:rgba(44,44,44,0.4); color:var(--text-color); border-color:var(--iron-grey-light); transform:translateY(-1px); }
 
 /* ============================================================
-   CONNEXION (ancienne page — conservée)
+   ÉCRAN SÉLECTION DES CHAPITRES  (#selection-screen)
    ============================================================ */
-.login-container {
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: radial-gradient(circle, #1a0000 0%, #000 100%);
-}
-
-.login-box {
-    padding: 40px;
-    background: rgba(10, 10, 10, 0.9);
-    border: 2px solid var(--iron-grey);
-    box-shadow: 0 0 20px rgba(0, 0, 0, 1), inset 0 0 10px var(--blood-red);
-    text-align: center;
-}
-
-/* ============================================================
-   SÉLECTION DES CHAPITRES
-   ============================================================ */
-.chapter-selection {
-    padding: 50px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-}
-
-.chapter-card {
-    width: 250px;
-    border: 1px solid var(--iron-grey);
-    cursor: pointer;
-    transition: transform 0.3s;
-    background: #111;
-}
-
-.chapter-card:hover {
-    transform: scale(1.05);
-    border-color: var(--blood-red);
-}
-
-.chapter-card img {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-}
-
-.chapter-info {
-    padding: 10px;
-    text-align: center;
-}
-
-/* ============================================================
-   INTERFACE VISUAL NOVEL
-   ============================================================ */
-#game-interface {
+#selection-screen {
     position: relative;
     width: 100vw;
     height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-top: 55px;
+    background:
+        radial-gradient(ellipse at 50% -10%, #3a0000 0%, transparent 50%),
+        radial-gradient(ellipse at 20%  80%, #1a0000 0%, transparent 40%),
+        radial-gradient(ellipse at 80%  80%, #1a0000 0%, transparent 40%),
+        var(--deep-black);
+}
+
+/* Texture grain */
+#selection-screen::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    opacity:0.4;
+}
+
+/* Ligne décorative en haut */
+#selection-screen::after {
+    content:'';
+    position:fixed; top:0; left:0; right:0;
+    height:3px;
+    background: linear-gradient(90deg, transparent 0%, var(--blood-red-bright) 30%, var(--text-color) 50%, var(--blood-red-bright) 70%, transparent 100%);
+    box-shadow: 0 0 20px var(--glow-red);
+    z-index:2;
+}
+
+#selection-screen > * { position:relative; z-index:1; }
+
+#selection-screen .form-title {
+    margin-bottom: 4px;
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    animation: titleReveal 1.2s cubic-bezier(0.22,1,0.36,1) both;
+}
+
+/* Sous-titre */
+#selection-screen .form-title::before {
+    content: '— Vos Aventures —';
+    display: block;
+    font-family: 'Crimson Text', serif;
+    font-size: 0.32em;
+    letter-spacing: 8px;
+    color: var(--text-dim);
+    -webkit-text-fill-color: var(--text-dim);
+    background: none;
+    filter: none;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+
+@keyframes titleReveal {
+    from { opacity:0; transform:translateY(-20px); }
+    to   { opacity:1; transform:translateY(0); }
+}
+
+/* BOUTON CONTINUER */
+#selection-screen > div:not(.chapter-selection):not(.user-controls) {
+    margin: 22px 0 6px;
+    animation: fadeUp 0.8s 0.3s both;
+}
+
+.btn-resume {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    background: transparent;
+    color: var(--text-color);
+    border: 1px solid var(--text-dim);
+    padding: 12px 44px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s;
+}
+.btn-resume::before {
+    content:'';
+    position:absolute; inset:0;
+    background: linear-gradient(90deg, transparent, rgba(212,175,55,0.08), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.5s;
+}
+.btn-resume:hover {
+    border-color: var(--text-color);
+    color: #fff;
+    box-shadow: 0 0 20px var(--glow-gold);
+}
+.btn-resume:hover::before { transform: translateX(100%); }
+
+/* GRILLE DES CHAPITRES */
+.chapter-selection {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+    justify-content: center;
+    padding: 30px 40px 60px;
+    animation: fadeUp 0.9s 0.5s both;
+}
+@keyframes fadeUp {
+    from { opacity:0; transform:translateY(24px); }
+    to   { opacity:1; transform:translateY(0); }
+}
+
+.chapter-card {
+    width: clamp(200px, 22vw, 270px);
+    background: rgba(12,5,5,0.92);
+    border: 1px solid var(--iron-grey);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition:
+        transform 0.35s cubic-bezier(0.22,1,0.36,1),
+        box-shadow 0.35s,
+        border-color 0.35s;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+}
+
+.chapter-card::before {
+    content:'';
+    position:absolute; inset:0; z-index:2;
+    background: linear-gradient(115deg, transparent 40%, rgba(212,175,55,0.07) 50%, transparent 60%);
+    transform: translateX(-100%);
+    transition: transform 0.5s;
+}
+.chapter-card::after {
+    content:'';
+    position:absolute; bottom:0; left:0; right:0;
+    height:3px;
+    background: linear-gradient(90deg, transparent, var(--blood-red-bright), transparent);
+    transform: scaleX(0);
+    transition: transform 0.35s;
+}
+
+.chapter-card:hover {
+    transform: translateY(-6px) scale(1.02);
+    border-color: var(--blood-red-bright);
+    box-shadow: 0 10px 40px rgba(74,0,0,0.5), 0 0 0 1px var(--blood-red);
+}
+.chapter-card:hover::before { transform: translateX(100%); }
+.chapter-card:hover::after  { transform: scaleX(1); }
+
+.chapter-card img {
+    width:100%; height:160px; object-fit:cover;
+    display:block;
+    filter: grayscale(30%) brightness(0.7);
+    transition: filter 0.35s;
+}
+.chapter-card:hover img { filter: grayscale(0%) brightness(0.9); }
+
+.chapter-info {
+    padding: 14px 16px;
+    text-align: center;
+    border-top: 1px solid var(--iron-grey);
+}
+.chapter-info h3 {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(0.7rem, 1.5vw, 0.82rem);
+    letter-spacing: 3px;
+    color: var(--text-color);
+    text-transform: uppercase;
+    font-weight: 400;
+}
+
+/* ============================================================
+   CONTRÔLES — coin haut droite
+   ============================================================ */
+.user-controls {
+    position: fixed;
+    top: 18px; right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 1000;
+}
+#status-icon {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    border: 1px solid #000;
+    flex-shrink: 0;
+}
+.online  { background:#2ecc71; box-shadow:0 0 8px #2ecc71; }
+.offline { background:#e74c3c; box-shadow:0 0 8px #e74c3c; }
+
+.gothic-btn.small {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    background: rgba(0,0,0,0.7);
+    color: var(--text-dim);
+    border: 1px solid var(--iron-grey);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.gothic-btn.small:hover { border-color: var(--blood-red-bright); color:#fff; }
+
+/* ============================================================
+   INTERFACE VISUAL NOVEL  (#game-interface)
+   ============================================================ */
+#game-interface {
+    position: fixed;
+    inset: 0;
+    width: 100vw; height: 100vh;
     background-size: cover;
     background-position: center;
+    overflow: hidden;
 }
 
+/* Vignette */
+#game-interface::before {
+    content:'';
+    position:absolute; inset:0; z-index:1; pointer-events:none;
+    background: radial-gradient(ellipse at 50% 50%, transparent 38%, rgba(0,0,0,0.7) 100%);
+}
+
+/* --- PERSONNAGES --- */
 .characters-layer {
     position: absolute;
-    bottom: 0;
-    width: 100%;
+    bottom: 0; left: 0; right: 0;
+    height: 82%;
     display: flex;
     justify-content: space-around;
-    height: 80%;
+    align-items: flex-end;
+    z-index: 2;
 }
-
 .character {
     height: 100%;
     object-fit: contain;
+    filter: drop-shadow(0 0 20px rgba(0,0,0,0.8));
+    animation: charReveal 0.6s ease both;
+}
+@keyframes charReveal {
+    from { opacity:0; transform:translateY(10px); }
+    to   { opacity:1; transform:translateY(0); }
 }
 
+/* --- BOÎTE DE DIALOGUE — fer forgé --- */
 .dialogue-container {
     position: absolute;
-    bottom: 20px;
+    bottom: 24px;
     left: 50%;
     transform: translateX(-50%);
-    width: 80%;
-    max-width: 900px;
-    min-height: 120px;
-    background: rgba(10, 10, 10, 0.9) !important;
-    padding: 20px 30px;
-    border: 4px double #2c2c2c !important;
-    border-radius: 15px;
-    box-shadow: 0 0 15px #4a0000, inset 0 0 10px #000;
+    width: min(880px, 88vw);
+    min-height: 130px;
     z-index: 10;
+
+    background: rgba(6, 3, 3, 0.93);
+    padding: 22px 32px 20px;
+
+    border: 1px solid #1c1c1c;
+    outline: 1px solid var(--iron-grey);
+    outline-offset: 5px;
+
+    box-shadow:
+        0 0 0 2px #000,
+        0 0 30px var(--blood-red),
+        0 0 70px rgba(74,0,0,0.2),
+        inset 0 0 25px rgba(0,0,0,0.6);
+
+    animation: dialogueReveal 0.4s ease both;
+}
+@keyframes dialogueReveal {
+    from { opacity:0; transform:translateX(-50%) translateY(12px); }
+    to   { opacity:1; transform:translateX(-50%) translateY(0); }
 }
 
-.dialogue-container::before {
-    content: "◈";
-    position: absolute;
-    top: -10px;
-    left: -10px;
-    color: var(--iron-grey);
-    font-size: 24px;
+.dialogue-container::before { content:"◈"; position:absolute; top:-14px;    left:-14px;  color:var(--iron-grey-light); font-size:22px; line-height:1; }
+.dialogue-container::after  { content:"◈"; position:absolute; bottom:-14px; right:-14px; color:var(--iron-grey-light); font-size:22px; line-height:1; }
+
+.dialogue-container h4 {
+    font-family: 'Cinzel', serif;
+    font-size: 0.78rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--blood-red-bright) !important;
+    margin: 0 0 10px 0;
+    text-shadow: 0 0 12px rgba(122,0,0,0.6);
+}
+.dialogue-container h4::after {
+    content:'';
+    display:block; margin-top:6px;
+    height:1px;
+    background: linear-gradient(90deg, var(--blood-red-bright), transparent 60%);
+    width: 55%;
 }
 
+#dialogue-text {
+    font-family: 'Crimson Text', serif;
+    font-size: clamp(1rem, 1.8vw, 1.18rem);
+    line-height: 1.75;
+    color: var(--white-smoke);
+    letter-spacing: 0.3px;
+}
+
+/* --- CHOIX --- */
 .choice-container {
     position: absolute;
-    bottom: 160px;
-    right: 10%;
+    bottom: 190px;
+    right: 8%;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -414,95 +496,41 @@ input[type="password"]::placeholder {
 }
 
 .choice-btn {
-    background: rgba(20, 0, 0, 0.9);
+    font-family: 'Cinzel', serif;
+    font-size: clamp(0.62rem, 1.2vw, 0.75rem);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    background: rgba(10, 2, 2, 0.92);
     color: var(--text-color);
     border: 1px solid var(--iron-grey);
-    padding: 10px 20px;
+    border-left: 3px solid var(--blood-red-bright);
+    padding: 11px 22px;
     cursor: pointer;
-    min-width: 200px;
+    min-width: clamp(160px, 20vw, 240px);
     text-align: right;
-    transition: 0.2s;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.22s ease;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.6);
 }
-
 .choice-btn:hover {
     background: var(--blood-red);
-    color: white;
-    border-color: var(--text-color);
-}
-
-.btn-resume {
-    background: var(--blood-red);
-    color: white;
-    padding: 15px 30px;
-    border: none;
-    cursor: pointer;
-    margin-bottom: 30px;
-}
-
-/* ============================================================
-   STATUT / CONTRÔLES UTILISATEUR
-   ============================================================ */
-.user-controls {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    z-index: 1000;
-}
-
-#status-icon {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    z-index: 1000;
-    border: 2px solid #000;
-}
-
-.online  { background-color: #2ecc71; box-shadow: 0 0 10px #2ecc71; }
-.offline { background-color: #e74c3c; box-shadow: 0 0 10px #e74c3c; }
-
-.gothic-btn.small {
-    padding: 5px 10px;
-    font-size: 0.8em;
-    border: 1px solid var(--iron-grey);
-    background: rgba(0,0,0,0.6);
-    color: var(--text-color);
-    cursor: pointer;
-    font-family: 'Cinzel', serif;
-}
-
-.gothic-btn.small:hover {
-    border-color: var(--blood-red);
     color: #fff;
+    border-color: var(--text-color);
+    border-left-color: var(--text-color);
+    box-shadow: 0 0 18px rgba(74,0,0,0.7);
+    transform: translateX(-4px);
 }
 
 /* ============================================================
-   RESPONSIVE — petits écrans
+   RESPONSIVE
    ============================================================ */
-@media (max-width: 480px) {
-    .form-signin {
-        border-left: none;
-        border-right: none;
-        box-shadow: 0 0 30px var(--glow-red);
-    }
-
-    .choice-container {
-        right: 5%;
-        bottom: 180px;
-    }
-
-    .choice-btn {
-        min-width: 160px;
-        font-size: 0.75rem;
-    }
-
-    .dialogue-container {
-        width: 95%;
-        padding: 15px 20px;
-    }
+@media (max-width: 600px) {
+    .chapter-selection { padding: 20px 16px 50px; gap:16px; }
+    .chapter-card { width: min(280px, 85vw); }
+    .dialogue-container { width:96vw; padding:14px 16px; bottom:10px; outline:none; }
+    .dialogue-container::before, .dialogue-container::after { display:none; }
+    .choice-container { right:4%; bottom:160px; }
+    .choice-btn { min-width:140px; font-size:0.62rem; padding:9px 14px; }
+    #selection-screen .form-title { font-size:1.6rem; }
 }
