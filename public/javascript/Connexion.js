@@ -1,17 +1,17 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const btnConnexion = document.getElementById('loginButton1');
-    const btnInscription = document.getElementById('loginButton1');
-    const emailInput = document.getElementById('email'); // login
-    const passwordInput = document.getElementById('password'); //mots de passe
+    const btnConnexion = document.getElementById('button1');
+    const btnInscription = document.getElementById('button2');
+    const emailInput = document.getElementById('email'); // Utilisé comme login
+    const passwordInput = document.getElementById('password');
 
-        // dans les constantes, on recupere dans les informationss dans les ID si dessus.
+    // --- FONCTION CONNEXION ---
     btnConnexion.addEventListener('click', async () => {
         const payload = {
             login: emailInput.value,
-            pasword: passwordInput.value 
+            pasword: passwordInput.value // Respecte l'orthographe du serveur 'pasword'
         };
-        // quand le boutton connexion est cliqué il va vérifie si l'identifiant et le mots de passe sont bon.
-         try {
+
+        try {
             const response = await fetch('/connexion', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -30,10 +30,8 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error("Erreur:", error);
         }
     });
-});
 
-     // --- FONCTION INSCRIPTION ---
-
+    // --- FONCTION INSCRIPTION ---
     btnInscription.addEventListener('click', async () => {
         const payload = {
             loginValue: emailInput.value,
@@ -53,5 +51,4 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error("Erreur:", error);
         }
     });
-
-    
+});
