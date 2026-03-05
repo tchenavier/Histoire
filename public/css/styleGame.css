@@ -1,9 +1,25 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+
+/* ============================================================
+   VARIABLES & RESET
+   ============================================================ */
 :root {
     --gothic-black: #0a0a0a;
     --blood-red: #4a0000;
+    --blood-red-bright: #7a0000;
     --iron-grey: #2c2c2c;
+    --iron-grey-light: #444;
     --text-color: #d4af37;
-    /* Or vieilli */
+    --text-dim: #8a6f1e;
+    --white-smoke: #e8e8e8;
+    --glow-red: rgba(74, 0, 0, 0.6);
+    --glow-gold: rgba(212, 175, 55, 0.3);
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 body {
@@ -12,23 +28,279 @@ body {
     background-color: var(--gothic-black);
     color: var(--text-color);
     font-family: 'Crimson Text', serif;
-    overflow: hidden;
-    /* Empêche le scroll sur le jeu */
+    min-height: 100vh;
 }
 
-h1,
-h2,
-.choice-btn {
+h1, h2, .choice-btn {
     font-family: 'Cinzel', serif;
     text-transform: uppercase;
     letter-spacing: 2px;
 }
 
-/* --- CONNEXION --- */
-.form-title {
-    text-align: center;
+/* ============================================================
+   SIGNIN PAGE — fond animé avec vignette
+   ============================================================ */
+body.signin-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+    background:
+        radial-gradient(ellipse at 50% 0%, #2a0000 0%, transparent 60%),
+        radial-gradient(ellipse at 50% 100%, #1a0000 0%, transparent 60%),
+        #060606;
+    animation: bgPulse 8s ease-in-out infinite alternate;
 }
 
+@keyframes bgPulse {
+    from { background-position: 50% 0%, 50% 100%; }
+    to   {
+        background:
+            radial-gradient(ellipse at 50% 0%, #3a0000 0%, transparent 60%),
+            radial-gradient(ellipse at 50% 100%, #2a0000 0%, transparent 60%),
+            #060606;
+    }
+}
+
+/* Particules de poussière / effet vieux parchemin en ::before du body */
+body.signin-page::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.35;
+}
+
+/* ============================================================
+   FORM SIGNIN — carte centrale
+   ============================================================ */
+.form-signin {
+    position: relative;
+    z-index: 1;
+    width: min(440px, 92vw);
+    padding: clamp(30px, 5vw, 55px) clamp(25px, 5vw, 50px);
+    background: rgba(8, 5, 5, 0.92);
+    border: 1px solid var(--iron-grey);
+    box-shadow:
+        0 0 0 1px #000,
+        0 0 40px var(--glow-red),
+        0 0 80px rgba(74, 0, 0, 0.2),
+        inset 0 0 30px rgba(0,0,0,0.8);
+    animation: cardReveal 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes cardReveal {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Ornements aux coins */
+.form-signin::before,
+.form-signin::after {
+    font-family: 'Cinzel', serif;
+    position: absolute;
+    color: var(--iron-grey-light);
+    font-size: 20px;
+    line-height: 1;
+    transition: color 0.4s;
+}
+.form-signin::before {
+    content: "◈";
+    top: -12px;
+    left: -12px;
+}
+.form-signin::after {
+    content: "◈";
+    bottom: -12px;
+    right: -12px;
+}
+
+/* Ligne décorative en haut */
+.form-signin > form::before {
+    content: '';
+    display: block;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--blood-red-bright), transparent);
+    margin-bottom: clamp(20px, 4vw, 35px);
+}
+
+/* ============================================================
+   TITRE — effet métal argenté gravé
+   ============================================================ */
+.form-title {
+    font-family: 'Cinzel', serif;
+    text-transform: uppercase;
+    letter-spacing: 8px;
+    font-size: clamp(1.4rem, 4vw, 2rem);
+    font-weight: 900;
+    text-align: center;
+    margin-bottom: clamp(25px, 4vw, 40px);
+    position: relative;
+
+    /* Dégradé métallique argent */
+    background: linear-gradient(
+        180deg,
+        #ffffff 0%,
+        #c8c8c8 20%,
+        #9a9a9a 40%,
+        #e8e8e8 55%,
+        #7a7a7a 70%,
+        #b0b0b0 85%,
+        #d6d6d6 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+
+    /* Relief de gravure */
+    filter: drop-shadow(0 1px 0 rgba(255,255,255,0.25))
+            drop-shadow(0 -1px 0 rgba(0,0,0,0.8))
+            drop-shadow(0 0 18px rgba(180,180,180,0.2));
+}
+
+.form-title::before {
+    content: '— ';
+    -webkit-text-fill-color: #666;
+    color: #666;
+    font-size: 0.6em;
+    letter-spacing: 2px;
+}
+
+.form-title::after {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #888, #ccc, #888, transparent);
+    margin: 10px auto 0;
+    box-shadow: 0 0 6px rgba(180,180,180,0.4);
+}
+
+/* ============================================================
+   GROUPES DE CHAMPS
+   ============================================================ */
+.form-group {
+    position: relative;
+    margin-bottom: clamp(18px, 3vw, 28px);
+}
+
+.form-group label {
+    display: block;
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+    transition: color 0.3s;
+}
+
+.form-group:focus-within label {
+    color: var(--text-color);
+}
+
+/* Inputs */
+input[type="email"],
+input[type="password"],
+input[type="text"] {
+    display: block;
+    width: 100%;
+    padding: 12px 16px;
+    background: rgba(15, 8, 8, 0.9);
+    border: 1px solid var(--iron-grey);
+    border-bottom: 2px solid var(--iron-grey);
+    color: var(--white-smoke);
+    font-family: 'Crimson Text', serif;
+    font-size: 1.05rem;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    border-radius: 2px;
+}
+
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="text"]:focus {
+    border-color: var(--blood-red-bright);
+    border-bottom-color: var(--text-color);
+    box-shadow: 0 4px 15px rgba(74, 0, 0, 0.4), inset 0 0 8px rgba(0,0,0,0.5);
+    color: #fff;
+}
+
+input[type="email"]::placeholder,
+input[type="password"]::placeholder {
+    color: #333;
+}
+
+/* ============================================================
+   BOUTONS
+   ============================================================ */
+.bouton {
+    display: block;
+    width: 100%;
+    padding: clamp(11px, 2vw, 14px) 20px;
+    font-family: 'Cinzel', serif;
+    font-size: clamp(0.75rem, 2vw, 0.85rem);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.25s ease;
+    margin-top: 10px;
+}
+
+#button1 {
+    background: var(--blood-red);
+    color: var(--text-color);
+    border: 1px solid #6a0000;
+    box-shadow: 0 0 15px var(--glow-red), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+#button1:hover,
+#button1:focus {
+    background: var(--blood-red-bright);
+    color: #fff;
+    box-shadow: 0 0 25px rgba(122, 0, 0, 0.8), 0 0 50px rgba(74, 0, 0, 0.4);
+    transform: translateY(-1px);
+}
+
+#button1:active {
+    transform: translateY(0);
+    box-shadow: 0 0 10px var(--glow-red);
+}
+
+#button2 {
+    background: transparent;
+    color: var(--text-dim);
+    border: 1px solid var(--iron-grey);
+}
+
+#button2:hover,
+#button2:focus {
+    background: rgba(44, 44, 44, 0.4);
+    color: var(--text-color);
+    border-color: var(--iron-grey-light);
+    transform: translateY(-1px);
+}
+
+/* Séparateur entre les deux boutons */
+#button2 {
+    margin-top: 8px;
+    position: relative;
+}
+
+/* ============================================================
+   CONNEXION (ancienne page — conservée)
+   ============================================================ */
 .login-container {
     height: 100vh;
     display: flex;
@@ -45,17 +317,9 @@ h2,
     text-align: center;
 }
 
-input {
-    display: block;
-    width: 100%;
-    margin: 15px 0;
-    padding: 10px;
-    background: #111;
-    border: 1px solid var(--iron-grey);
-    color: white;
-}
-
-/* --- SELECTION DES CHAPITRES --- */
+/* ============================================================
+   SÉLECTION DES CHAPITRES
+   ============================================================ */
 .chapter-selection {
     padding: 50px;
     display: flex;
@@ -88,7 +352,9 @@ input {
     text-align: center;
 }
 
-/* --- INTERFACE VISUAL NOVEL --- */
+/* ============================================================
+   INTERFACE VISUAL NOVEL
+   ============================================================ */
 #game-interface {
     position: relative;
     width: 100vw;
@@ -97,7 +363,6 @@ input {
     background-position: center;
 }
 
-/* Conteneur des personnages */
 .characters-layer {
     position: absolute;
     bottom: 0;
@@ -112,7 +377,6 @@ input {
     object-fit: contain;
 }
 
-/* Zone de texte - Style Fer Forgé */
 .dialogue-container {
     position: absolute;
     bottom: 20px;
@@ -121,20 +385,14 @@ input {
     width: 80%;
     max-width: 900px;
     min-height: 120px;
-    background: rgba(0, 0, 0, 0.85);
+    background: rgba(10, 10, 10, 0.9) !important;
     padding: 20px 30px;
-
-    /* Le fer forgé simulé par les bordures et ombres */
-    border: 4px double #333;
+    border: 4px double #2c2c2c !important;
     border-radius: 15px;
-    box-shadow:
-        0 0 0 2px #000,
-        0 0 15px var(--blood-red),
-        inset 0 0 20px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 15px #4a0000, inset 0 0 10px #000;
     z-index: 10;
 }
 
-/* Décoration fer forgé aux angles (Optionnel) */
 .dialogue-container::before {
     content: "◈";
     position: absolute;
@@ -144,11 +402,9 @@ input {
     font-size: 24px;
 }
 
-/* Zone des choix - Alignée à droite au dessus du texte */
 .choice-container {
     position: absolute;
     bottom: 160px;
-    /* Juste au dessus de la boite de dialogue */
     right: 10%;
     display: flex;
     flex-direction: column;
@@ -183,37 +439,9 @@ input {
     margin-bottom: 30px;
 }
 
-/* Icône de statut en haut à droite */
-#status-icon {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    width: 15px;
-    height: 15px;
-    border-radius: 50%;
-    z-index: 1000;
-    border: 2px solid #000;
-}
-
-.online {
-    background-color: #2ecc71;
-    /* Vert */
-    box-shadow: 0 0 10px #2ecc71;
-}
-
-.offline {
-    background-color: #e74c3c;
-    /* Rouge */
-    box-shadow: 0 0 10px #e74c3c;
-}
-
-/* Amélioration de la zone de texte fer forgé */
-.dialogue-container {
-    border: 4px double #2c2c2c !important;
-    /* Couleur fer sombre */
-    background: rgba(10, 10, 10, 0.9) !important;
-    box-shadow: 0 0 15px #4a0000, inset 0 0 10px #000;
-}
+/* ============================================================
+   STATUT / CONTRÔLES UTILISATEUR
+   ============================================================ */
 .user-controls {
     position: fixed;
     top: 20px;
@@ -225,13 +453,18 @@ input {
 }
 
 #status-icon {
+    position: fixed;
+    top: 20px;
+    right: 20px;
     width: 12px;
     height: 12px;
     border-radius: 50%;
+    z-index: 1000;
+    border: 2px solid #000;
 }
 
-.online { background-color: #2ecc71; box-shadow: 0 0 8px #2ecc71; }
-.offline { background-color: #e74c3c; box-shadow: 0 0 8px #e74c3c; }
+.online  { background-color: #2ecc71; box-shadow: 0 0 10px #2ecc71; }
+.offline { background-color: #e74c3c; box-shadow: 0 0 10px #e74c3c; }
 
 .gothic-btn.small {
     padding: 5px 10px;
@@ -246,4 +479,30 @@ input {
 .gothic-btn.small:hover {
     border-color: var(--blood-red);
     color: #fff;
+}
+
+/* ============================================================
+   RESPONSIVE — petits écrans
+   ============================================================ */
+@media (max-width: 480px) {
+    .form-signin {
+        border-left: none;
+        border-right: none;
+        box-shadow: 0 0 30px var(--glow-red);
+    }
+
+    .choice-container {
+        right: 5%;
+        bottom: 180px;
+    }
+
+    .choice-btn {
+        min-width: 160px;
+        font-size: 0.75rem;
+    }
+
+    .dialogue-container {
+        width: 95%;
+        padding: 15px 20px;
+    }
 }
