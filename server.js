@@ -215,8 +215,8 @@ app.post('/PassageSenario', (req, res) => {//pour passer au prochaine senario
         }
 
         const idSenario = results[0].idSenarioEnCours;
-        connection.query('SELECT SuitSenario FROM `utilisateur`,`Choix` WHERE utilisateur.`idSenarioEnCours`= Choix.`idSenario` AND utilisateur.`idSenarioEnCours` = ?',//car insacron, donc imbriquer pour que se soit bien a la suite
-            [idSenario],
+        connection.query('SELECT SuitSenario FROM `utilisateur`,`Choix` WHERE utilisateur.`idSenarioEnCours`= Choix.`idSenario` AND utilisateur.`id` = ?',//car insacron, donc imbriquer pour que se soit bien a la suite
+            [id],
             (err, results) => { //verification des posibilité pour l'id actuelle de progresion
                 if (err) {
                     console.error('Erreur lors de la lecture des posibilite :', err);
@@ -300,8 +300,8 @@ app.post('/Texte', (req, res) => {//pour obtenir les information de quoi affiche
                     res.status(401).json({ message: '' });
                     return;
                 }
-                connection.query('SELECT Personnage.nomPersonnage, Personnage.nomImagePersonnage FROM `utilisateur`, `AssosiationPersonnage`, `Personnage` WHERE utilisateur.`idSenarioEnCours` = AssosiationPersonnage.`idSenario` AND AssosiationPersonnage.`idPersonnage` = Personnage.`id` AND utilisateur.`idSenarioEnCours` = ?',
-                    [idSenario], (err, personnage) => {// pour récupéréer les peronnage présent
+                connection.query('SELECT Personnage.nomPersonnage, Personnage.nomImagePersonnage FROM `utilisateur`, `AssosiationPersonnage`, `Personnage` WHERE utilisateur.`idSenarioEnCours` = AssosiationPersonnage.`idSenario` AND AssosiationPersonnage.`idPersonnage` = Personnage.`id` AND utilisateur.`id` = ?',
+                    [id], (err, personnage) => {// pour récupéréer les peronnage présent
                         if (err) {
                             console.error('Erreur lors de la récupération des utilisateurs :', err);
                             res.status(500).json({ message: 'Erreur serveur' });
