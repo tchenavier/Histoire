@@ -214,7 +214,7 @@ app.post('/PassageSenario', (req, res) => {//pour passer au prochaine senario
             console.log('Lecuture de l id davancement ok :', results.insertId);
         }
 
-        const idSenario = results[0].idSenarioEnCours;
+        //const idSenario = results[0].idSenarioEnCours;
         connection.query('SELECT SuitSenario FROM `utilisateur`,`Choix` WHERE utilisateur.`idSenarioEnCours`= Choix.`idSenario` AND utilisateur.`id` = ?',//car insacron, donc imbriquer pour que se soit bien a la suite
             [id],
             (err, results) => { //verification des posibilité pour l'id actuelle de progresion
