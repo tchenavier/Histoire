@@ -34,8 +34,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- FONCTION INSCRIPTION ---
     btnInscription.addEventListener('click', async () => {
         const payload = {
-            loginValue: emailInput.value,
-            passwordValue: passwordInput.value
+            login: emailInput.value,
+            pasword: passwordInput.value
         };
 
         try {

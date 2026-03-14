@@ -28,53 +28,97 @@ connection.connect((err) => {
 
 app.use(express.static('public'));
 app.use(express.json());
+
 app.post('/register', (req, res) => { //enregistrement des utilisateur
     console.log('Données reçues pour l\'inscription');
     console.log(req.body);
-    connection.query( //sert a envoyer les donner au serveur
-        'INSERT INTO utilisateur (`login`, `pasword`) VALUES (?,?)',
-        [req.body.loginValue, req.body.passwordValue],
-        (err, results) => {
-            if (err) {
-                console.error('Erreur lors de l\'insertion dans la base de données :', err);
-                res.status(500).json({ message: 'Erreur serveur' });
-                return;
-            }
-            else {
-                console.log('Insertion réussie, ID utilisateur :', results.insertId);
-                res.status(200).json({ message: 'Inscription réussie !', userId: results.insertId });
-                return;
-            }
+    const { login, pasword } = req.body;
+
+    if (typeof login !== 'string' || typeof pasword !== 'string') {
+        return res.status(400).json({ error: 'La saisie doit être une chaîne de caractères.' });
+    }
+    else {
+        // Calcul de la longueur (UTF-16)
+        const loginLength = login.length;
+        const paswordLength = pasword.length;
+
+        // Exemple de règle : longueur minimale et maximale
+        if (loginLength <= 0 || paswordLength <= 0) {
+            return res.status(400).json({ error: '' });
+        }
+        else if (loginLength > 25 || paswordLength > 25) {
+            return res.status(400).json({ error: '' });
+        }
+        else {
+            connection.query( //sert a envoyer les donner au serveur
+                'INSERT INTO utilisateur (`login`, `pasword`) VALUES (?,?)',
+                [login, pasword],
+                (err, results) => {
+                    if (err) {
+                        console.error('Erreur lors de l\'insertion dans la base de données :', err);
+                        res.status(500).json({ message: 'Erreur serveur' });
+                        return;
+                    }
+                    else {
+                        console.log('Insertion réussie, ID utilisateur :', results.insertId);
+                        res.status(200).json({ message: 'Inscription réussie !', userId: results.insertId });
+                        return;
+                    }
+
+                }
+            );
 
         }
-    );
+    }
+
 });
 
 app.post('/connexion', (req, res) => {
     console.log(req.body);
     //on récupère le login et le password
     const { login, pasword } = req.body;
-    connection.query('SELECT id,login FROM utilisateur WHERE login = ? AND pasword = ?', [login, pasword], (err, results) => {//Pour ne renvoyer que l'id le login et l'id du role
-        if (err) {
-            console.error('Erreur lors de la vérification des identifiants :', err);
-            res.status(500).json({ message: 'Erreur serveur' });
-            return;
+
+    if (typeof login !== 'string' || typeof pasword !== 'string') {
+        return res.status(400).json({ error: 'La saisie doit être une chaîne de caractères.' });
+    }
+    else {
+        // Calcul de la longueur (UTF-16)
+        const loginLength = login.length;
+        const paswordLength = pasword.length;
+
+        // Exemple de règle : longueur minimale et maximale
+        if (loginLength <= 0 || paswordLength <= 0) {
+            return res.status(400).json({ error: '' });
         }
-        if (results.length === 0) {
-            res.status(401).json({ message: 'Identifiants invalides' });
-            return;
+        else if (loginLength > 25 || paswordLength > 25) {
+            return res.status(400).json({ error: '' });
         }
-        // Identifiants valides 
-        //renvoi les informations du user
-        res.status(202).json({ user: results[0] });
-        const filePath = path.join(__dirname, 'public', 'visualNovel.html');//envois la page du jeu
-        // __dirname: répertoire du fichier JS actuel
-        /* res.sendFile(filePath, (err) => {
-             if (err) {
-                 console.error('Erreur d envoi du fichier:', err);
-             }
-         });*/
-    });
+        else {
+            connection.query('SELECT id,login FROM utilisateur WHERE login = ? AND pasword = ?', [login, pasword], (err, results) => {//Pour ne renvoyer que l'id le login et l'id du role
+                if (err) {
+                    console.error('Erreur lors de la vérification des identifiants :', err);
+                    res.status(500).json({ message: 'Erreur serveur' });
+                    return;
+                }
+                if (results.length === 0) {
+                    res.status(401).json({ message: 'Identifiants invalides' });
+                    return;
+                }
+                // Identifiants valides 
+                //renvoi les informations du user
+                res.status(202).json({ user: results[0] });
+                const filePath = path.join(__dirname, 'public', 'visualNovel.html');//envois la page du jeu
+                // __dirname: répertoire du fichier JS actuel
+                /* res.sendFile(filePath, (err) => {
+                     if (err) {
+                         console.error('Erreur d envoi du fichier:', err);
+                     }
+                 });*/
+            });
+        }
+    }
+
+
 });
 
 app.post('/changementDuChapitre', (req, res) => { //Chargement du premier senario du chapitre, verification avant que l'utilisateur peut accéder au chapitre
