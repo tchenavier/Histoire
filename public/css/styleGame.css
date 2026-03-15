@@ -534,3 +534,39 @@ input[type="email"]:focus, input[type="password"]:focus {
     .choice-btn { min-width:140px; font-size:0.62rem; padding:9px 14px; }
     #selection-screen .form-title { font-size:1.6rem; }
 }
+
+/* Bouton retour en haut à gauche */
+.back-to-chapters {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    color: #d4af37; /* Or vieilli */
+    border: 1px solid #2c2c2c;
+    padding: 10px 15px;
+    font-family: 'Cinzel', serif;
+    cursor: pointer;
+    z-index: 100;
+    transition: 0.3s;
+}
+
+.back-to-chapters:hover {
+    border-color: #800000;
+    color: white;
+    box-shadow: 0 0 10px #800000;
+}
+
+/* Style des personnages pour qu'ils soient bien alignés */
+.characters-layer {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 20px;
+    pointer-events: none; /* Le clic doit passer à travers pour toucher game-interface */
+}
+
+.character-sprite {
+    max-height: 80vh;
+    width: auto;
+    filter: drop-shadow(0 0 10px black);
+}
