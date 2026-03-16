@@ -555,18 +555,3 @@ input[type="email"]:focus, input[type="password"]:focus {
     color: white;
     box-shadow: 0 0 10px #800000;
 }
-
-/* Style des personnages pour qu'ils soient bien alignés */
-.characters-layer {
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    gap: 20px;
-    pointer-events: none; /* Le clic doit passer à travers pour toucher game-interface */
-}
-
-.character-sprite {
-    max-height: 80vh;
-    width: auto;
-    filter: drop-shadow(0 0 10px black);
-}
