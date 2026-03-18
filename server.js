@@ -42,7 +42,7 @@ app.post('/register', (req, res) => { //enregistrement des utilisateur
         const loginLength = login.length;
         const paswordLength = pasword.length;
 
-        // Exemple de règle : longueur minimale et maximale
+        // longueur minimale et maximale
         if (loginLength <= 0 || paswordLength <= 0) {
             return res.status(400).json({ error: '' });
         }
@@ -86,7 +86,7 @@ app.post('/connexion', (req, res) => {
         const loginLength = login.length;
         const paswordLength = pasword.length;
 
-        // Exemple de règle : longueur minimale et maximale
+        // longueur minimale et maximale
         if (loginLength <= 0 || paswordLength <= 0) {
             return res.status(400).json({ error: '' });
         }
@@ -363,7 +363,7 @@ app.post('/Texte', (req, res) => {//pour obtenir les information de quoi affiche
                                     return;
                                 }
                                 //renvoi les informations du texte et des choix disponible
-                                res.status(200).json({ text: Element, Choix: Choi, Personnage: personnage });
+                                res.status(200).json({ text: Element, Choix: Choi, Personnage: personnage });//pour envoyer la réponse
                                 return;
                             }
                         );
