@@ -6,6 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const speakerName = document.querySelector('.dialogue-container h4');
     const choiceContainer = document.querySelector('.choice-container');
     const btnResume = document.querySelector('.btn-resume');
+    const btnreprise1 = document.getElementById('chapter-info1');
+    const btnreprise2 = document.getElementById('chapter-info1');
 
     // Vérification de connexion et mise à jour de l'icône
     updateStatusIcon();
@@ -119,3 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 });
 //fonction anonyme qui permet de ce deconnecter et de supprimer le LocalStorage et de rediriger vers la page de connexion (index.html).
+
+btnreprise1.addEventListener('click', () => {
+        loadStoryStep();
+    });
