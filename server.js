@@ -3,6 +3,8 @@ const app = express(); // instasie expresse
 const mysql = require('mysql2');
 const path = require('path');//fournit des utilitaires pour travailler avec les chemins de fichiers et de répertoires
 const { BroadcastChannel } = require('worker_threads');
+const bcrypt = require('bcrypt');
+const saltRounds = 10; // Niveau de complexité du hash
 
 require('dotenv').config();
 
@@ -50,27 +52,40 @@ app.post('/register', (req, res) => { //enregistrement des utilisateur
             return res.status(400).json({ error: '' });
         }
         else {
-            connection.query( //sert a envoyer les donner au serveur
-                'INSERT INTO utilisateur (`login`, `pasword`) VALUES (?,?)',
-                [login, pasword],
-                (err, results) => {
-                    if (err) {
-                        console.error('Erreur lors de l\'insertion dans la base de données :', err);
-                        res.status(500).json({ message: 'Erreur serveur' });
-                        return;
-                    }
-                    else {
-                        console.log('Insertion réussie, ID utilisateur :', results.insertId);
-                        res.status(200).json({ message: 'Inscription réussie !', userId: results.insertId });
-                        return;
-                    }
+            connection.query('SELECT id,login FROM utilisateur WHERE login = ? ', [login], (err, results) => {//Pour ne renvoyer que l'id le login et l'id du role
+                if (err) {
+                    console.error('Erreur lors de la vérification des identifiants :', err);
+                    res.status(500).json({ message: 'Erreur serveur' });
+                    return;
+                }
+                else if (results.length !== 0) {
+                    res.status(401).json({ message: '' });
+                    return;
+                }
+                else {
+                    connection.query( //sert a envoyer les donner au serveur
+                        'INSERT INTO utilisateur (`login`, `pasword`) VALUES (?,?)',
+                        [login, pasword],
+                        (err, results) => {
+                            if (err) {
+                                console.error('Erreur lors de l\'insertion dans la base de données :', err);
+                                res.status(500).json({ message: 'Erreur serveur' });
+                                return;
+                            }
+                            else {
+                                console.log('Insertion réussie, ID utilisateur :', results.insertId);
+                                res.status(200).json({ message: 'Inscription réussie !', userId: results.insertId });
+                                return;
+                            }
+
+                        }
+                    );
 
                 }
+            }
             );
-
         }
     }
-
 });
 
 app.post('/connexion', (req, res) => {
