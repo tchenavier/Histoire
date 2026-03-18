@@ -408,9 +408,10 @@ input[type="email"]:focus, input[type="password"]:focus {
 .characters-layer {
     position: absolute;
     bottom: 0; left: 0; right: 0;
-    height: 82%;
+    height: 75%;
     display: flex;
-    justify-content: space-around;
+    /*justify-content: space-around;*/
+    justify-content: flex-start;
     align-items: flex-end;
     z-index: 2;
 }
