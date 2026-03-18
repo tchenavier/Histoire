@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const choix = data.Choix;   // Liste des choix
 
         // Mise à jour du décor et du texte
-        if(info.ambiance) gameInterface.style.backgroundImage = `url('images/${info.ambiance}')`;
+        if(info.nomImage) gameInterface.style.backgroundImage = `url('ilustation/fond/${info.nomImage}')`;
         speakerName.innerText = "Narrateur"; // Ou info.nom si tu ajoutes une colonne nom
         dialogueText.innerText = info.Texte;
         // On vide et on génère les boutons de choix
